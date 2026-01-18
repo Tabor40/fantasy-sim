@@ -2,9 +2,9 @@ import streamlit as st
 import random
 import pandas as pd
 
-st.set_page_config(page_title="Thuggernaut FF Simulator", page_icon="🏈")
+st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 
-st.title("Thuggernaut Fantasy Football Simulator 🏈")
+st.title("Fantasy Football Simulator 🏈")
 st.markdown("Simulate seasons, build/draft a team, and check playoff odds! Built by @Tailwind40")
 
 # Simple player pool (early 2026 consensus projections - total season fantasy points, approx PPR)
