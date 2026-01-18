@@ -1,9 +1,9 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Thuggernaut FF Simulator", page_icon="🏈")
+st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 
-st.title("Thuggernaut Fantasy Football Simulator 🏈")
+st.title("Fantasy Football Simulator 🏈")
 st.markdown("Simulate thousands of seasons and see your playoff odds! Built by @Tailwind40")
 
 st.write("Adjust the sliders below and hit the button to run simulations.")
