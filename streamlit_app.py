@@ -5,89 +5,166 @@ import pandas as pd
 st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 
 st.title("FF Simulator 🏈")
-st.markdown("Simulate thousands of seasons and see your playoff odds! Built by @Tailwind40")
+st.markdown("12-Team Snake Draft (5 Rounds) + Season Simulation. Built by @Tailwind40")
 
-st.write("Draft players to build your team, then simulate your playoff chances.")
-
-# Simple player pool (early 2026 consensus projections - total season fantasy points, approx PPR)
-# Expand this list as much as you want later
+# Player pool with approximate 2026 PPR projections (total season points; expand as needed)
 player_data = [
-    {"player": "Bijan Robinson", "pos": "RB", "proj_points": 380},
-    {"player": "Christian McCaffrey", "pos": "RB", "proj_points": 370},
-    {"player": "Ja'Marr Chase", "pos": "WR", "proj_points": 360},
-    {"player": "CeeDee Lamb", "pos": "WR", "proj_points": 355},
-    {"player": "Justin Jefferson", "pos": "WR", "proj_points": 350},
-    {"player": "Josh Allen", "pos": "QB", "proj_points": 420},
-    {"player": "Lamar Jackson", "pos": "QB", "proj_points": 410},
-    {"player": "Jalen Hurts", "pos": "QB", "proj_points": 400},
-    {"player": "Saquon Barkley", "pos": "RB", "proj_points": 360},
-    {"player": "Amon-Ra St. Brown", "pos": "WR", "proj_points": 340},
-    {"player": "Puka Nacua", "pos": "WR", "proj_points": 330},
-    {"player": "Tyreek Hill", "pos": "WR", "proj_points": 325},
-    {"player": "Travis Kelce", "pos": "TE", "proj_points": 280},
-    {"player": "Sam LaPorta", "pos": "TE", "proj_points": 270},
-    # ← Add more players here when you want (50–100 is ideal)
+    {"player": "Bijan Robinson", "pos": "RB", "proj": 380},
+    {"player": "Jahmyr Gibbs", "pos": "RB", "proj": 370},
+    {"player": "Ja'Marr Chase", "pos": "WR", "proj": 360},
+    {"player": "Puka Nacua", "pos": "WR", "proj": 355},
+    {"player": "CeeDee Lamb", "pos": "WR", "proj": 350},
+    {"player": "Josh Allen", "pos": "QB", "proj": 420},
+    {"player": "Lamar Jackson", "pos": "QB", "proj": 410},
+    {"player": "Jalen Hurts", "pos": "QB", "proj": 400},
+    {"player": "Christian McCaffrey", "pos": "RB", "proj": 370},
+    {"player": "Saquon Barkley", "pos": "RB", "proj": 360},
+    {"player": "Justin Jefferson", "pos": "WR", "proj": 350},
+    {"player": "Amon-Ra St. Brown", "pos": "WR", "proj": 340},
+    {"player": "Tyreek Hill", "pos": "WR", "proj": 325},
+    {"player": "Travis Kelce", "pos": "TE", "proj": 280},
+    {"player": "Sam LaPorta", "pos": "TE", "proj": 270},
+    {"player": "De'Von Achane", "pos": "RB", "proj": 320},
+    {"player": "Jonathan Taylor", "pos": "RB", "proj": 340},
+    {"player": "Jaxon Smith-Njigba", "pos": "WR", "proj": 330},
+    # Add 50+ more for realism; top from early 2026 consensus
 ]
+players_df = pd.DataFrame(player_data).sort_values("proj", ascending=False).reset_index(drop=True)
 
-players_df = pd.DataFrame(player_data)
+# Session state for draft persistence
+if 'draft_started' not in st.session_state:
+    st.session_state.draft_started = False
+    st.session_state.drafted_players = []  # global available after pick
+    st.session_state.rosters = {f"Team {i+1}": [] for i in range(12)}
+    st.session_state.current_pick = 0
+    st.session_state.your_pick = None
+    st.session_state.your_team_name = "@Tailwind40"
 
-# Draft interface
-available_players = players_df["player"].tolist()
-drafted = st.multiselect(
-    "Draft players (search and select as many as you want)",
-    available_players,
-    default=[],
-    placeholder="Start typing player names..."
-)
+# Settings
+your_team_name = st.text_input("Your team name", "@Tailwind40")
+your_draft_position = st.selectbox("Your draft position (1-12)", options=list(range(1, 13)))
 
-if drafted:
-    drafted_df = players_df[players_df["player"].isin(drafted)]
-    total_proj = drafted_df["proj_points"].sum()
-    num_drafted = len(drafted)
+num_rounds = 5
+num_teams = 12
+total_picks = num_rounds * num_teams
 
-    # Estimate team strength from total projected points
-    # This is a rough mapping — you can tune the formula later
-    team_strength = 6.0 + (total_proj / 400.0)
-    team_strength = min(13.0, max(6.0, team_strength))
+if not st.session_state.draft_started:
+    if st.button("Start Draft"):
+        st.session_state.draft_started = True
+        st.session_state.drafted_players = players_df.copy()
+        st.session_state.rosters = {f"Team {i+1}": [] for i in range(12)}
+        st.session_state.current_pick = 0
+        st.session_state.your_team_name = your_team_name
+        st.session_state.your_pick = your_draft_position
+        st.rerun()
 
-    st.subheader("Your Drafted Team")
+if st.session_state.draft_started:
+    st.subheader("Snake Draft in Progress (5 Rounds)")
+
+    # Generate snake order picks
+    draft_order = []
+    for round_num in range(num_rounds):
+        if round_num % 2 == 0:  # odd rounds: 1 to 12
+            draft_order.extend(range(1, num_teams + 1))
+        else:  # even rounds: 12 to 1
+            draft_order.extend(range(num_teams, 0, -1))
+
+    current_team_num = draft_order[st.session_state.current_pick]
+
+    # Show progress
+    st.write(f"**Current pick:** {st.session_state.current_pick + 1} / {total_picks} | Round { (st.session_state.current_pick // num_teams) + 1 }")
+    st.write(f"**On the clock:** {'Your team (' + your_team_name + ')' if current_team_num == st.session_state.your_pick else f'Team {current_team_num} (CPU)'}")
+
+    # Display available players (top remaining)
     st.dataframe(
-        drafted_df[["player", "pos", "proj_points"]]
-        .sort_values("proj_points", ascending=False)
-        .reset_index(drop=True)
+        st.session_state.drafted_players[["player", "pos", "proj"]].head(15),
+        use_container_width=True,
+        hide_index=True
     )
 
-    st.markdown(f"**Total projected points:** {total_proj:.0f}")
-    st.markdown(f"**Estimated team strength:** {team_strength:.1f}")
+    # Your pick interface
+    if current_team_num == st.session_state.your_pick:
+        available_names = st.session_state.drafted_players["player"].tolist()
+        your_selection = st.selectbox("Your pick:", available_names, index=None, placeholder="Choose a player...")
 
-    # Simulation settings
-    team_name = st.text_input("Your team name", "@Tailwind40")
-    num_seasons = st.slider("Number of seasons to simulate", 100, 20000, 5000, step=100)
-    playoff_threshold = st.number_input("Wins needed to make playoffs", 8, 12, 10)
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Confirm Pick") and your_selection:
+                picked_row = st.session_state.drafted_players[st.session_state.drafted_players["player"] == your_selection].iloc[0]
+                st.session_state.rosters[your_team_name].append(picked_row["player"])
+                st.session_state.drafted_players = st.session_state.drafted_players[st.session_state.drafted_players["player"] != your_selection]
+                st.session_state.current_pick += 1
+                st.rerun()
+        with col2:
+            if st.button("Auto-Pick Best Available"):
+                best = st.session_state.drafted_players.iloc[0]
+                st.session_state.rosters[your_team_name].append(best["player"])
+                st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
+                st.session_state.current_pick += 1
+                st.rerun()
+    else:
+        # CPU auto-pick (greedy: best proj)
+        if st.button("Advance Draft (CPU picks)"):
+            best = st.session_state.drafted_players.iloc[0]
+            team_name_cpu = f"Team {current_team_num}"
+            st.session_state.rosters[team_name_cpu].append(best["player"])
+            st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
+            st.session_state.current_pick += 1
+            st.rerun()
 
-    if st.button("Simulate My Team!", type="primary"):
-        with st.spinner("Simulating seasons..."):
-            playoff_count = 0
-            total_wins = 0
-            for _ in range(num_seasons):
-                wins = round(random.gauss(team_strength, 1.8))
-                wins = max(4, min(14, wins))
-                total_wins += wins
-                if wins >= playoff_threshold:
-                    playoff_count += 1
-            avg_wins = total_wins / num_seasons
-            playoff_percent = (playoff_count / num_seasons) * 100
+    # Auto-complete button for speed-testing
+    if st.button("Auto-Complete Entire Draft"):
+        while st.session_state.current_pick < total_picks:
+            current_team_num = draft_order[st.session_state.current_pick]
+            best = st.session_state.drafted_players.iloc[0]
+            team_name = your_team_name if current_team_num == st.session_state.your_pick else f"Team {current_team_num}"
+            st.session_state.rosters[team_name].append(best["player"])
+            st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
+            st.session_state.current_pick += 1
+        st.rerun()
 
-        st.success("Simulation complete!")
-        
-        st.subheader("Results")
-        st.markdown(f"**Team:** {team_name}")
-        st.markdown(f"**Average wins per season:** {avg_wins:.1f}")
-        st.markdown(f"**Playoff probability:** **{playoff_percent:.1f}%**")
-        
-        st.progress(playoff_percent / 100)
-        st.caption(f"{playoff_percent:.1f}% chance → {'Very likely!' if playoff_percent > 70 else 'Solid shot!' if playoff_percent > 50 else 'Grind time.'}")
-        
-        st.balloons()
-else:
-    st.info("Select some players above to build your team and run the simulation!")
+    # Show your roster so far
+    if your_team_name in st.session_state.rosters and st.session_state.rosters[your_team_name]:
+        st.subheader("Your Roster So Far")
+        your_roster_df = pd.DataFrame({"Player": st.session_state.rosters[your_team_name]})
+        st.dataframe(your_roster_df)
+
+    # When draft ends
+    if st.session_state.current_pick >= total_picks:
+        st.success("Draft Complete! Your team is ready.")
+        st.subheader("Your Final Roster")
+        st.dataframe(pd.DataFrame({"Player": st.session_state.rosters[your_team_name]}))
+
+        # Calculate team strength (average proj per player or total / scaling)
+        your_players = st.session_state.drafted_players[st.session_state.drafted_players["player"].isin(st.session_state.rosters[your_team_name])]
+        total_proj = your_players["proj"].sum()
+        team_strength = 6.0 + (total_proj / (num_rounds * 40.0))  # rough scaling to 6-13 range
+        team_strength = min(13.0, max(6.0, team_strength))
+
+        st.markdown(f"**Estimated team strength:** {team_strength:.1f}")
+
+        # Simulation
+        num_seasons = st.slider("Seasons to simulate", 100, 20000, 5000, step=100)
+        playoff_threshold = st.number_input("Wins needed for playoffs", 8, 12, 10)
+
+        if st.button("Simulate Season!", type="primary"):
+            with st.spinner("Running Monte Carlo sim..."):
+                playoff_count = 0
+                total_wins = 0
+                for _ in range(num_seasons):
+                    wins = round(random.gauss(team_strength, 1.8))
+                    wins = max(4, min(14, wins))
+                    total_wins += wins
+                    if wins >= playoff_threshold:
+                        playoff_count += 1
+                avg_wins = total_wins / num_seasons
+                playoff_percent = (playoff_count / num_seasons) * 100
+
+            st.success("Simulation done!")
+            st.subheader("Results")
+            st.markdown(f"**Team:** {your_team_name}")
+            st.markdown(f"**Avg wins:** {avg_wins:.1f}")
+            st.markdown(f"**Playoff %:** **{playoff_percent:.1f}%**")
+            st.progress(playoff_percent / 100)
+            st.caption(f"{playoff_percent:.1f}% → {'Very likely!' if playoff_percent > 70 else 'Solid shot!' if playoff_percent > 50 else 'Grind time.'}")
+            st.balloons()
