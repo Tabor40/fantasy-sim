@@ -7,7 +7,7 @@ st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 st.title("FF Simulator 🏈")
 st.markdown("12-Team Snake Draft (5 Rounds) + Season Simulation. Built by @Tailwind40")
 
-# Player pool (expand this as needed with more realistic 2026 projections)
+# Player pool (expand as needed)
 player_data = [
     {"player": "Bijan Robinson", "pos": "RB", "proj": 380},
     {"player": "Jahmyr Gibbs", "pos": "RB", "proj": 370},
@@ -27,11 +27,11 @@ player_data = [
     {"player": "De'Von Achane", "pos": "RB", "proj": 320},
     {"player": "Jonathan Taylor", "pos": "RB", "proj": 340},
     {"player": "Jaxon Smith-Njigba", "pos": "WR", "proj": 330},
-    # Add more players here for better realism
+    # Add more players for better realism
 ]
 players_df = pd.DataFrame(player_data).sort_values("proj", ascending=False).reset_index(drop=True)
 
-# Session state initialization
+# Session state
 if 'draft_started' not in st.session_state:
     st.session_state.draft_started = False
     st.session_state.drafted_players = None
@@ -40,7 +40,7 @@ if 'draft_started' not in st.session_state:
     st.session_state.your_pick = None
     st.session_state.your_team_name = "@Tailwind40"
 
-# Settings (always update your name in session state)
+# Settings
 your_team_name = st.text_input("Your team name", value=st.session_state.your_team_name)
 st.session_state.your_team_name = your_team_name
 
@@ -54,7 +54,6 @@ if not st.session_state.draft_started:
     if st.button("Start Draft"):
         st.session_state.draft_started = True
         st.session_state.drafted_players = players_df.copy()
-        # Initialize all rosters, including yours with current name
         st.session_state.rosters = {f"Team {i+1}": [] for i in range(12)}
         st.session_state.rosters[your_team_name] = []
         st.session_state.current_pick = 0
@@ -64,7 +63,7 @@ if not st.session_state.draft_started:
 if st.session_state.draft_started:
     st.subheader("Snake Draft in Progress (5 Rounds)")
 
-    # Snake draft order
+    # Snake order
     draft_order = []
     for r in range(num_rounds):
         if r % 2 == 0:
@@ -78,7 +77,6 @@ if st.session_state.draft_started:
     st.write(f"**Pick {st.session_state.current_pick + 1} / {total_picks}** | Round {(st.session_state.current_pick // num_teams) + 1}")
     st.write(f"**On the clock:** {current_team_name} {'(You)' if current_team_num == st.session_state.your_pick else '(CPU)'}")
 
-    # Show top remaining players
     st.dataframe(
         st.session_state.drafted_players[["player", "pos", "proj"]].head(15),
         use_container_width=True,
@@ -107,17 +105,37 @@ if st.session_state.draft_started:
                     st.session_state.current_pick += 1
                     st.rerun()
     else:
-        # CPU turn
-        if st.button("Advance Draft (CPU picks)"):
-            if not st.session_state.drafted_players.empty:
-                best = st.session_state.drafted_players.iloc[0]
-                st.session_state.rosters[current_team_name].append(best["player"])
-                st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
-                st.session_state.current_pick += 1
+        # CPU turn area
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Advance Draft (CPU picks once)"):
+                if not st.session_state.drafted_players.empty:
+                    best = st.session_state.drafted_players.iloc[0]
+                    st.session_state.rosters[current_team_name].append(best["player"])
+                    st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
+                    st.session_state.current_pick += 1
+                    st.rerun()
+        with col2:
+            if st.button("Auto-Draft Until My Next Pick"):
+                while st.session_state.current_pick < total_picks:
+                    curr_num = draft_order[st.session_state.current_pick]
+                    if curr_num == st.session_state.your_pick:
+                        break  # Stop before your next turn
+                    curr_name = your_team_name if curr_num == st.session_state.your_pick else f"Team {curr_num}"
+                    if not st.session_state.drafted_players.empty:
+                        best = st.session_state.drafted_players.iloc[0]
+                        st.session_state.rosters[curr_name].append(best["player"])
+                        st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
+                    st.session_state.current_pick += 1
                 st.rerun()
 
-    # Skip to end
-    if st.button("Auto-Complete Draft"):
+    # Show your roster
+    if your_team_name in st.session_state.rosters and st.session_state.rosters[your_team_name]:
+        st.subheader("Your Roster")
+        st.dataframe(pd.DataFrame({"Player": st.session_state.rosters[your_team_name]}))
+
+    # Full auto-complete
+    if st.button("Auto-Complete Entire Draft"):
         while st.session_state.current_pick < total_picks:
             curr_num = draft_order[st.session_state.current_pick]
             curr_name = your_team_name if curr_num == st.session_state.your_pick else f"Team {curr_num}"
@@ -128,26 +146,19 @@ if st.session_state.draft_started:
             st.session_state.current_pick += 1
         st.rerun()
 
-    # Show your roster progress
-    if your_team_name in st.session_state.rosters and st.session_state.rosters[your_team_name]:
-        st.subheader("Your Roster")
-        st.dataframe(pd.DataFrame({"Player": st.session_state.rosters[your_team_name]}))
-
-    # Draft finished
+    # Draft complete
     if st.session_state.current_pick >= total_picks:
         st.success("Draft Complete!")
         st.subheader("Your Final Roster")
         st.dataframe(pd.DataFrame({"Player": st.session_state.rosters.get(your_team_name, [])}))
 
-        # Calculate strength
         your_players = players_df[players_df["player"].isin(st.session_state.rosters.get(your_team_name, []))]
         total_proj = your_players["proj"].sum()
-        team_strength = 6.0 + (total_proj / (num_rounds * 40.0))  # Adjust scaling if needed
+        team_strength = 6.0 + (total_proj / (num_rounds * 40.0))
         team_strength = min(13.0, max(6.0, team_strength))
 
         st.markdown(f"**Estimated team strength:** {team_strength:.1f}")
 
-        # Simulation
         num_seasons = st.slider("Seasons to simulate", 100, 20000, 5000, step=100)
         playoff_threshold = st.number_input("Wins needed for playoffs", 8, 12, 10)
 
