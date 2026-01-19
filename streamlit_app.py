@@ -7,7 +7,7 @@ st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 st.title("FF Simulator 🏈")
 st.markdown("12-Team Snake Draft (5 Rounds) + Season Simulation. Built by @Tailwind40")
 
-# Player pool (expand as needed)
+# Player pool (expand as needed with more realistic 2026 projections)
 player_data = [
     {"player": "Bijan Robinson", "pos": "RB", "proj": 380},
     {"player": "Jahmyr Gibbs", "pos": "RB", "proj": 370},
@@ -27,11 +27,12 @@ player_data = [
     {"player": "De'Von Achane", "pos": "RB", "proj": 320},
     {"player": "Jonathan Taylor", "pos": "RB", "proj": 340},
     {"player": "Jaxon Smith-Njigba", "pos": "WR", "proj": 330},
-    # Add more players for better realism
+    # ← Add more players here when you want (50–100 is ideal)
 ]
+
 players_df = pd.DataFrame(player_data).sort_values("proj", ascending=False).reset_index(drop=True)
 
-# Session state
+# Session state initialization
 if 'draft_started' not in st.session_state:
     st.session_state.draft_started = False
     st.session_state.drafted_players = None
@@ -40,7 +41,7 @@ if 'draft_started' not in st.session_state:
     st.session_state.your_pick = None
     st.session_state.your_team_name = "@Tailwind40"
 
-# Settings
+# Settings (always update your name in session state)
 your_team_name = st.text_input("Your team name", value=st.session_state.your_team_name)
 st.session_state.your_team_name = your_team_name
 
@@ -54,6 +55,7 @@ if not st.session_state.draft_started:
     if st.button("Start Draft"):
         st.session_state.draft_started = True
         st.session_state.drafted_players = players_df.copy()
+        # Initialize all rosters, including yours with current name
         st.session_state.rosters = {f"Team {i+1}": [] for i in range(12)}
         st.session_state.rosters[your_team_name] = []
         st.session_state.current_pick = 0
@@ -63,7 +65,7 @@ if not st.session_state.draft_started:
 if st.session_state.draft_started:
     st.subheader("Snake Draft in Progress (5 Rounds)")
 
-    # Snake order
+    # Snake draft order
     draft_order = []
     for r in range(num_rounds):
         if r % 2 == 0:
@@ -77,6 +79,7 @@ if st.session_state.draft_started:
     st.write(f"**Pick {st.session_state.current_pick + 1} / {total_picks}** | Round {(st.session_state.current_pick // num_teams) + 1}")
     st.write(f"**On the clock:** {current_team_name} {'(You)' if current_team_num == st.session_state.your_pick else '(CPU)'}")
 
+    # Show top remaining players
     st.dataframe(
         st.session_state.drafted_players[["player", "pos", "proj"]].head(15),
         use_container_width=True,
@@ -104,8 +107,10 @@ if st.session_state.draft_started:
                     st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
                     st.session_state.current_pick += 1
                     st.rerun()
+                else:
+                    st.warning("No more players left!")
     else:
-        # CPU turn area
+        # CPU turn area with the fixed "Auto-Draft Until My Next Pick"
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Advance Draft (CPU picks once)"):
@@ -115,21 +120,33 @@ if st.session_state.draft_started:
                     st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
                     st.session_state.current_pick += 1
                     st.rerun()
+                else:
+                    st.warning("No more players available!")
         with col2:
             if st.button("Auto-Draft Until My Next Pick"):
+                advanced = 0
                 while st.session_state.current_pick < total_picks:
                     curr_num = draft_order[st.session_state.current_pick]
                     if curr_num == st.session_state.your_pick:
-                        break  # Stop before your next turn
+                        break  # Stop BEFORE your turn
+
                     curr_name = your_team_name if curr_num == st.session_state.your_pick else f"Team {curr_num}"
-                    if not st.session_state.drafted_players.empty:
-                        best = st.session_state.drafted_players.iloc[0]
-                        st.session_state.rosters[curr_name].append(best["player"])
-                        st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
+
+                    if st.session_state.drafted_players.empty:
+                        st.warning("Ran out of players during auto-draft!")
+                        break
+
+                    best = st.session_state.drafted_players.iloc[0]
+                    st.session_state.rosters[curr_name].append(best["player"])
+                    st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
                     st.session_state.current_pick += 1
+                    advanced += 1
+
+                if advanced > 0:
+                    st.info(f"Auto-advanced {advanced} CPU picks.")
                 st.rerun()
 
-    # Show your roster
+    # Show your roster progress
     if your_team_name in st.session_state.rosters and st.session_state.rosters[your_team_name]:
         st.subheader("Your Roster")
         st.dataframe(pd.DataFrame({"Player": st.session_state.rosters[your_team_name]}))
@@ -146,7 +163,7 @@ if st.session_state.draft_started:
             st.session_state.current_pick += 1
         st.rerun()
 
-    # Draft complete
+    # Draft finished
     if st.session_state.current_pick >= total_picks:
         st.success("Draft Complete!")
         st.subheader("Your Final Roster")
