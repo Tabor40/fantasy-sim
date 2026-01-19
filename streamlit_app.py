@@ -7,7 +7,7 @@ st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 st.title("FF Simulator 🏈")
 st.markdown("12-Team Snake Draft (5 Rounds) + Season Simulation. Built by @Tailwind40")
 
-# Player pool (expand as needed with more realistic 2026 projections)
+# Expanded player pool - 60 players with realistic early 2026 PPR season projections
 player_data = [
     {"player": "Bijan Robinson", "pos": "RB", "proj": 380},
     {"player": "Jahmyr Gibbs", "pos": "RB", "proj": 370},
@@ -27,7 +27,49 @@ player_data = [
     {"player": "De'Von Achane", "pos": "RB", "proj": 320},
     {"player": "Jonathan Taylor", "pos": "RB", "proj": 340},
     {"player": "Jaxon Smith-Njigba", "pos": "WR", "proj": 330},
-    # ← Add more players here when you want (50–100 is ideal)
+    {"player": "Brock Bowers", "pos": "TE", "proj": 265},
+    {"player": "Malik Nabers", "pos": "WR", "proj": 315},
+    {"player": "Kyren Williams", "pos": "RB", "proj": 310},
+    {"player": "Nico Collins", "pos": "WR", "proj": 305},
+    {"player": "Drake London", "pos": "WR", "proj": 300},
+    {"player": "Garrett Wilson", "pos": "WR", "proj": 295},
+    {"player": "Deebo Samuel", "pos": "WR", "proj": 290},
+    {"player": "Chris Olave", "pos": "WR", "proj": 285},
+    {"player": "Davante Adams", "pos": "WR", "proj": 280},
+    {"player": "DJ Moore", "pos": "WR", "proj": 275},
+    {"player": "Jaylen Waddle", "pos": "WR", "proj": 270},
+    {"player": "Zay Flowers", "pos": "WR", "proj": 265},
+    {"player": "DeVonta Smith", "pos": "WR", "proj": 260},
+    {"player": "James Cook", "pos": "RB", "proj": 255},
+    {"player": "Kenneth Walker III", "pos": "RB", "proj": 250},
+    {"player": "Derrick Henry", "pos": "RB", "proj": 245},
+    {"player": "Josh Jacobs", "pos": "RB", "proj": 240},
+    {"player": "Breece Hall", "pos": "RB", "proj": 235},
+    {"player": "Kyler Murray", "pos": "QB", "proj": 390},
+    {"player": "C.J. Stroud", "pos": "QB", "proj": 380},
+    {"player": "Joe Burrow", "pos": "QB", "proj": 375},
+    {"player": "Patrick Mahomes", "pos": "QB", "proj": 370},
+    {"player": "Jayden Daniels", "pos": "QB", "proj": 365},
+    {"player": "Baker Mayfield", "pos": "QB", "proj": 350},
+    {"player": "Trey McBride", "pos": "TE", "proj": 255},
+    {"player": "Mark Andrews", "pos": "TE", "proj": 250},
+    {"player": "George Kittle", "pos": "TE", "proj": 245},
+    {"player": "Dalton Kincaid", "pos": "TE", "proj": 240},
+    {"player": "Kyle Pitts", "pos": "TE", "proj": 235},
+    {"player": "David Njoku", "pos": "TE", "proj": 230},
+    {"player": "Evan Engram", "pos": "TE", "proj": 225},
+    {"player": "T.J. Hockenson", "pos": "TE", "proj": 220},
+    {"player": "A.J. Brown", "pos": "WR", "proj": 315},
+    {"player": "Marvin Harrison Jr.", "pos": "WR", "proj": 310},
+    {"player": "Cooper Kupp", "pos": "WR", "proj": 305},
+    {"player": "Mike Evans", "pos": "WR", "proj": 300},
+    {"player": "DK Metcalf", "pos": "WR", "proj": 295},
+    {"player": "Rashee Rice", "pos": "WR", "proj": 290},
+    {"player": "Brian Thomas Jr.", "pos": "WR", "proj": 285},
+    {"player": "Rome Odunze", "pos": "WR", "proj": 280},
+    {"player": "Xavier Worthy", "pos": "WR", "proj": 275},
+    {"player": "Ladd McConkey", "pos": "WR", "proj": 270},
+    {"player": "Tetairoa McMillan", "pos": "WR", "proj": 265},
 ]
 
 players_df = pd.DataFrame(player_data).sort_values("proj", ascending=False).reset_index(drop=True)
