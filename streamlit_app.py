@@ -268,13 +268,28 @@ elif ss.phase == "week_preview":
             st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
 
     st.divider()
-    if st.button(f"🏈 Simulate Week {wk}", type="primary"):
-        results = [(t1, t2, sim_score(ss.team_strengths[t1]), sim_score(ss.team_strengths[t2]))
-                   for t1, t2 in matchups]
-        ss.weekly_results.append({"week": wk, "matchups": results})
-        ss.week_results = results
-        ss.phase = "week_results"
-        st.rerun()
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button(f"🏈 Simulate Week {wk}", type="primary"):
+            results = [(t1, t2, sim_score(ss.team_strengths[t1]), sim_score(ss.team_strengths[t2]))
+                       for t1, t2 in matchups]
+            ss.weekly_results.append({"week": wk, "matchups": results})
+            ss.week_results = results
+            ss.phase = "week_results"
+            st.rerun()
+    with c2:
+        if st.button("⏩ Sim Rest of Season"):
+            # Simulate every remaining week silently
+            for w in range(wk, WEEKS_REG + 1):
+                week_matchups = ss.schedule[w - 1]
+                results = [(t1, t2, sim_score(ss.team_strengths[t1]), sim_score(ss.team_strengths[t2]))
+                           for t1, t2 in week_matchups]
+                ss.weekly_results.append({"week": w, "matchups": results})
+                if w == WEEKS_REG:
+                    ss.week_results = results  # show final week on results screen
+            ss.current_week = WEEKS_REG
+            ss.phase = "week_results"
+            st.rerun()
 
 # ══════════════════════════════════════════════════════════════
 # PHASE: WEEK RESULTS  (show scores, then advance)
