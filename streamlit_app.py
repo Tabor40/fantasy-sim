@@ -75,7 +75,64 @@ player_data = [
 
 players_df = pd.DataFrame(player_data).sort_values("proj", ascending=False).reset_index(drop=True)
 
+# ─────────────────────────────────────────────────────────
+# FIX 1: Balanced round-robin schedule
+# Uses the polygon/circle method — every team plays exactly
+# once per week, and no pair appears more than twice across
+# 14 weeks (11-round RR, then weeks 12-14 reuse rounds 1-3).
+# ─────────────────────────────────────────────────────────
+def generate_schedule(team_names, num_weeks=14):
+    teams = list(team_names)
+    n = len(teams)
+
+    # Polygon/circle method for even n
+    fixed = teams[0]
+    rotating = teams[1:]
+    rounds = []
+
+    for i in range(n - 1):  # 11 rounds for 12 teams
+        round_teams = [fixed] + rotating
+        pairs = []
+        for j in range(n // 2):
+            t1 = round_teams[j]
+            t2 = round_teams[n - 1 - j]
+            pairs.append((t1, t2))
+        rounds.append(pairs)
+        rotating = [rotating[-1]] + rotating[:-1]  # rotate right
+
+    # Fill 14 weeks by cycling (weeks 12-14 reuse rounds 1-3)
+    schedule = [rounds[w % len(rounds)] for w in range(num_weeks)]
+    return schedule
+
+
+# ─────────────────────────────────────────────────────────
+# FIX 2: Realistic fantasy point scoring
+# Instead of a 6–20 integer, we simulate actual weekly
+# fantasy totals. A "good" team averages ~120 pts/week;
+# a weaker one ~90. Std dev of ~18 mirrors real variance.
+#
+# Team strength (proj sum) maps linearly into a weekly
+# mean score between 88 (weakest) and 128 (strongest).
+# ─────────────────────────────────────────────────────────
+SCORE_MIN = 88.0    # worst realistic weekly total
+SCORE_MAX = 128.0   # best realistic weekly total
+SCORE_STD = 18.0    # realistic week-to-week variance
+
+def proj_to_weekly_mean(proj_sum, all_proj_sums):
+    lo, hi = min(all_proj_sums), max(all_proj_sums)
+    if hi == lo:
+        return (SCORE_MIN + SCORE_MAX) / 2
+    t = (proj_sum - lo) / (hi - lo)
+    return SCORE_MIN + t * (SCORE_MAX - SCORE_MIN)
+
+def simulate_score(mean):
+    raw = random.gauss(mean, SCORE_STD)
+    return round(max(55.0, min(200.0, raw)), 2)
+
+
+# ─────────────────────────────────────────────────────────
 # Session state
+# ─────────────────────────────────────────────────────────
 if 'draft_started' not in st.session_state:
     st.session_state.draft_started = False
     st.session_state.drafted_players = None
@@ -85,7 +142,7 @@ if 'draft_started' not in st.session_state:
     st.session_state.your_team_name = "@Tailwind40"
     st.session_state.schedule = None
     st.session_state.standings = None
-    st.session_state.team_strengths = None  # New: store team strengths here
+    st.session_state.team_strengths = None
 
 your_team_name = st.text_input("Your team name", value=st.session_state.your_team_name)
 st.session_state.your_team_name = your_team_name
@@ -96,29 +153,6 @@ num_rounds = 5
 num_teams = 12
 total_picks = num_rounds * num_teams
 weeks_regular = 14
-
-def generate_schedule(team_names):
-    teams = list(team_names)
-    schedule = []
-    opponents = {t: [] for t in teams}
-    for i in range(len(teams)):
-        for j in range(i + 1, len(teams)):
-            t1, t2 = teams[i], teams[j]
-            opponents[t1].append(t2)
-            opponents[t2].append(t1)
-    all_matchups = []
-    for t in teams:
-        for opp in opponents[t]:
-            if (t, opp) not in all_matchups and (opp, t) not in all_matchups:
-                all_matchups.append((t, opp))
-    random.shuffle(all_matchups)
-    week_matchups = []
-    for w in range(weeks_regular):
-        week = []
-        while len(week) < num_teams // 2 and all_matchups:
-            week.append(all_matchups.pop(0))
-        week_matchups.append(week)
-    return week_matchups
 
 if not st.session_state.draft_started:
     if st.button("Start Draft"):
@@ -146,21 +180,25 @@ if st.session_state.draft_started:
 
         all_teams = list(st.session_state.rosters.keys())
 
-        # Calculate team strengths once and store in session state
+        # Build team strengths mapped to realistic weekly means
         if st.session_state.team_strengths is None:
-            team_strengths = {}
+            proj_sums = {}
             for team, roster in st.session_state.rosters.items():
                 team_players = players_df[players_df["player"].isin(roster)]
-                total_proj = team_players["proj"].sum()
-                strength = 6.0 + (total_proj / (num_rounds * 40.0))
-                team_strengths[team] = min(13.0, max(6.0, strength))
+                proj_sums[team] = team_players["proj"].sum()
+
+            all_sums = list(proj_sums.values())
+            team_strengths = {
+                team: proj_to_weekly_mean(psum, all_sums)
+                for team, psum in proj_sums.items()
+            }
             st.session_state.team_strengths = team_strengths
 
-        # Generate schedule once
+        # Generate balanced schedule once
         if st.session_state.schedule is None:
-            st.session_state.schedule = generate_schedule(all_teams)
+            st.session_state.schedule = generate_schedule(all_teams, weeks_regular)
 
-        # Simulate regular season if not done
+        # Simulate regular season once
         if st.session_state.standings is None:
             with st.spinner("Simulating full regular season..."):
                 standings = pd.DataFrame({
@@ -176,25 +214,21 @@ if st.session_state.draft_started:
                 for week_num, matchups in enumerate(st.session_state.schedule, 1):
                     week_scores = {}
                     for t1, t2 in matchups:
-                        s1 = st.session_state.team_strengths[t1]
-                        s2 = st.session_state.team_strengths[t2]
-                        score1 = round(random.gauss(s1, 1.8))
-                        score1 = max(4, min(20, score1))
-                        score2 = round(random.gauss(s2, 1.8))
-                        score2 = max(4, min(20, score2))
+                        s1 = simulate_score(st.session_state.team_strengths[t1])
+                        s2 = simulate_score(st.session_state.team_strengths[t2])
 
-                        week_scores[t1] = score1
-                        week_scores[t2] = score2
+                        week_scores[t1] = s1
+                        week_scores[t2] = s2
 
-                        standings.loc[t1, 'Points For'] += score1
-                        standings.loc[t1, 'Points Against'] += score2
-                        standings.loc[t2, 'Points For'] += score2
-                        standings.loc[t2, 'Points Against'] += score1
+                        standings.loc[t1, 'Points For'] += s1
+                        standings.loc[t1, 'Points Against'] += s2
+                        standings.loc[t2, 'Points For'] += s2
+                        standings.loc[t2, 'Points Against'] += s1
 
-                        if score1 > score2:
+                        if s1 > s2:
                             standings.loc[t1, 'Wins'] += 1
                             standings.loc[t2, 'Losses'] += 1
-                        elif score2 > score1:
+                        elif s2 > s1:
                             standings.loc[t2, 'Wins'] += 1
                             standings.loc[t1, 'Losses'] += 1
                         else:
@@ -206,65 +240,76 @@ if st.session_state.draft_started:
                         'Matchups': [(t1, t2, week_scores[t1], week_scores[t2]) for t1, t2 in matchups]
                     })
 
-                standings = standings.sort_values(['Wins', 'Points For'], ascending=[False, False]).reset_index()
+                standings['Points For'] = standings['Points For'].round(2)
+                standings['Points Against'] = standings['Points Against'].round(2)
+                standings = standings.sort_values(
+                    ['Wins', 'Points For'], ascending=[False, False]
+                ).reset_index()
+
                 st.session_state.standings = standings
                 st.session_state.weekly_results = weekly_results
 
-        # Display regular season
-        st.subheader("Regular Season Standings (Weeks 1-14)")
-        st.dataframe(st.session_state.standings.style.highlight_max(subset=['Wins'], color='#90EE90'))
+        # Display regular season standings
+        st.subheader("Regular Season Standings (Weeks 1–14)")
+        st.dataframe(
+            st.session_state.standings.style.highlight_max(subset=['Wins'], color='#90EE90'),
+            use_container_width=True
+        )
 
         with st.expander("View Weekly Matchups & Scores"):
             for week in st.session_state.weekly_results:
                 st.markdown(f"**Week {week['Week']}**")
                 for t1, t2, s1, s2 in week['Matchups']:
                     winner = t1 if s1 > s2 else t2 if s2 > s1 else "Tie"
-                    st.write(f"{t1} {s1} - {s2} {t2}  → Winner: **{winner}**")
+                    st.write(f"{t1} **{s1}** – **{s2}** {t2}  →  Winner: **{winner}**")
 
         # Playoffs
         playoff_teams = st.session_state.standings.head(6)['Team'].tolist()
         st.subheader("Playoffs (Top 6 Teams)")
-        st.write("Seeds: 1 = Bye, 2 = Bye, 3 vs 6, 4 vs 5 (Week 15)")
-        st.write("Week 16: Winners advance")
-        st.write("Week 17: Championship")
+        st.write("Seeds 1 & 2 get byes | 3 vs 6, 4 vs 5 (Week 15) | Semis (Week 16) | Championship (Week 17)")
 
         if st.button("Simulate Playoffs"):
             with st.spinner("Simulating playoffs..."):
-                # Week 15
-                matchup_15_1 = (playoff_teams[2], playoff_teams[5])  # 3 vs 6
-                matchup_15_2 = (playoff_teams[3], playoff_teams[4])  # 4 vs 5
+                def playoff_game(t1, t2):
+                    s1 = simulate_score(st.session_state.team_strengths[t1])
+                    s2 = simulate_score(st.session_state.team_strengths[t2])
+                    winner = t1 if s1 >= s2 else t2
+                    return winner, s1, s2
 
-                winners_15 = []
-                for m in [matchup_15_1, matchup_15_2]:
-                    t1, t2 = m
-                    s1 = round(random.gauss(st.session_state.team_strengths[t1], 1.8))
-                    s2 = round(random.gauss(st.session_state.team_strengths[t2], 1.8))
-                    winner = t1 if s1 > s2 else t2
-                    winners_15.append(winner)
+                # Week 15 — Wild Card
+                w15_results = []
+                for matchup in [(playoff_teams[2], playoff_teams[5]), (playoff_teams[3], playoff_teams[4])]:
+                    winner, s1, s2 = playoff_game(*matchup)
+                    w15_results.append((matchup[0], matchup[1], s1, s2, winner))
 
-                # Week 16
-                matchup_16_1 = (playoff_teams[0], winners_15[1])  # 1 vs lower
-                matchup_16_2 = (playoff_teams[1], winners_15[0])  # 2 vs higher
+                st.markdown("**Week 15 – Wild Card**")
+                for t1, t2, s1, s2, w in w15_results:
+                    st.write(f"{t1} **{s1}** – **{s2}** {t2}  →  **{w} advances**")
 
-                finalists = []
-                for m in [matchup_16_1, matchup_16_2]:
-                    t1, t2 = m
-                    s1 = round(random.gauss(st.session_state.team_strengths[t1], 1.8))
-                    s2 = round(random.gauss(st.session_state.team_strengths[t2], 1.8))
-                    winner = t1 if s1 > s2 else t2
-                    finalists.append(winner)
+                winners_15 = [r[4] for r in w15_results]
 
-                # Championship
-                champ_match = finalists
-                s1 = round(random.gauss(st.session_state.team_strengths[champ_match[0]], 1.8))
-                s2 = round(random.gauss(st.session_state.team_strengths[champ_match[1]], 1.8))
-                champion = champ_match[0] if s1 > s2 else champ_match[1]
+                # Week 16 — Semifinals
+                w16_results = []
+                for matchup in [(playoff_teams[0], winners_15[1]), (playoff_teams[1], winners_15[0])]:
+                    winner, s1, s2 = playoff_game(*matchup)
+                    w16_results.append((matchup[0], matchup[1], s1, s2, winner))
 
-            st.success(f"**Champion: {champion}** 🏆")
-            st.write(f"Final: {champ_match[0]} {s1} - {s2} {champ_match[1]}")
+                st.markdown("**Week 16 – Semifinals**")
+                for t1, t2, s1, s2, w in w16_results:
+                    st.write(f"{t1} **{s1}** – **{s2}** {t2}  →  **{w} advances**")
+
+                finalists = [r[4] for r in w16_results]
+
+                # Week 17 — Championship
+                champion, cs1, cs2 = playoff_game(finalists[0], finalists[1])
+                st.markdown("**Week 17 – Championship**")
+                st.write(f"{finalists[0]} **{cs1}** – **{cs2}** {finalists[1]}")
+
+            st.success(f"🏆 Champion: **{champion}**")
             st.balloons()
+
     else:
-        # Draft logic (unchanged from your last working version)
+        # ── Draft Phase ──────────────────────────────────────────
         draft_order = []
         for r in range(num_rounds):
             if r % 2 == 0:
@@ -273,12 +318,21 @@ if st.session_state.draft_started:
                 draft_order.extend(range(num_teams, 0, -1))
 
         current_team_num = draft_order[st.session_state.current_pick]
-        current_team_name = your_team_name if current_team_num == st.session_state.your_pick else f"Team {current_team_num}"
+        current_team_name = (
+            your_team_name
+            if current_team_num == st.session_state.your_pick
+            else f"Team {current_team_num}"
+        )
 
         st.subheader("Snake Draft in Progress (5 Rounds)")
-
-        st.write(f"**Pick {st.session_state.current_pick + 1} / {total_picks}** | Round {(st.session_state.current_pick // num_teams) + 1}")
-        st.write(f"**On the clock:** {current_team_name} {'(You)' if current_team_num == st.session_state.your_pick else '(CPU)'}")
+        st.write(
+            f"**Pick {st.session_state.current_pick + 1} / {total_picks}** "
+            f"| Round {(st.session_state.current_pick // num_teams) + 1}"
+        )
+        st.write(
+            f"**On the clock:** {current_team_name} "
+            f"{'(You)' if current_team_num == st.session_state.your_pick else '(CPU)'}"
+        )
 
         st.dataframe(
             st.session_state.drafted_players[["player", "pos", "proj"]].head(15),
@@ -288,14 +342,20 @@ if st.session_state.draft_started:
 
         if current_team_num == st.session_state.your_pick:
             available_names = st.session_state.drafted_players["player"].tolist()
-            your_selection = st.selectbox("Your pick:", available_names, index=None, placeholder="Choose a player...")
+            your_selection = st.selectbox(
+                "Your pick:", available_names, index=None, placeholder="Choose a player..."
+            )
 
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("Confirm Pick") and your_selection:
-                    picked_row = st.session_state.drafted_players[st.session_state.drafted_players["player"] == your_selection].iloc[0]
+                    picked_row = st.session_state.drafted_players[
+                        st.session_state.drafted_players["player"] == your_selection
+                    ].iloc[0]
                     st.session_state.rosters[your_team_name].append(picked_row["player"])
-                    st.session_state.drafted_players = st.session_state.drafted_players[st.session_state.drafted_players["player"] != your_selection]
+                    st.session_state.drafted_players = st.session_state.drafted_players[
+                        st.session_state.drafted_players["player"] != your_selection
+                    ]
                     st.session_state.current_pick += 1
                     st.rerun()
             with col2:
@@ -327,7 +387,11 @@ if st.session_state.draft_started:
                         curr_num = draft_order[st.session_state.current_pick]
                         if curr_num == st.session_state.your_pick:
                             break
-                        curr_name = your_team_name if curr_num == st.session_state.your_pick else f"Team {curr_num}"
+                        curr_name = (
+                            your_team_name
+                            if curr_num == st.session_state.your_pick
+                            else f"Team {curr_num}"
+                        )
                         if st.session_state.drafted_players.empty:
                             st.warning("Ran out of players during auto-draft!")
                             break
@@ -347,11 +411,14 @@ if st.session_state.draft_started:
         if st.button("Auto-Complete Entire Draft"):
             while st.session_state.current_pick < total_picks:
                 curr_num = draft_order[st.session_state.current_pick]
-                curr_name = your_team_name if curr_num == st.session_state.your_pick else f"Team {curr_num}"
+                curr_name = (
+                    your_team_name
+                    if curr_num == st.session_state.your_pick
+                    else f"Team {curr_num}"
+                )
                 if not st.session_state.drafted_players.empty:
                     best = st.session_state.drafted_players.iloc[0]
                     st.session_state.rosters[curr_name].append(best["player"])
                     st.session_state.drafted_players = st.session_state.drafted_players.iloc[1:]
                 st.session_state.current_pick += 1
             st.rerun()
-        
