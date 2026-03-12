@@ -321,6 +321,44 @@ def score_lineup(lineup, nfl_week=None):
     total = round(sum(v[1] for v in scores.values()), 2)
     return total, scores
 
+def render_playoff_scorecard():
+    """Reusable side-by-side player scorecard for playoff results screens."""
+    opp_name = ss.opp_team_name or "Opponent"
+
+    def build_rows(score_dict):
+        rows = []
+        for slot, val in score_dict.items():
+            player = val[0] if val else None
+            score  = val[1] if len(val) > 1 else 0.0
+            if player:
+                rows.append({
+                    "Slot":   slot,
+                    "Player": player,
+                    "Team":   get_player_team(player),
+                    "Pos":    get_player_pos(player),
+                    "Score":  score,
+                    "Proj":   f"{get_player_proj(player)/17:.1f}",
+                })
+        return pd.DataFrame(rows)
+
+    with st.expander("📊 Matchup Scorecard", expanded=True):
+        mc1, mc2 = st.columns(2)
+        with mc1:
+            df = build_rows(ss.week_player_scores)
+            total = round(df["Score"].sum(), 2) if not df.empty else 0.0
+            st.markdown(f"### 🏈 {ss.your_team}")
+            st.metric("Total Score", total)
+            st.dataframe(df, use_container_width=True, hide_index=True)
+        with mc2:
+            df = build_rows(ss.opp_player_scores) if ss.opp_player_scores else pd.DataFrame()
+            total = round(df["Score"].sum(), 2) if not df.empty else 0.0
+            st.markdown(f"### 🆚 {opp_name}")
+            st.metric("Total Score", total)
+            if not df.empty:
+                st.dataframe(df, use_container_width=True, hide_index=True)
+            else:
+                st.info("CPU opponent — no individual player data.")
+
 def get_standings(weekly_results, all_teams):
     s = {t: {"W": 0, "L": 0, "PF": 0.0, "PA": 0.0} for t in all_teams}
     for wk in weekly_results:
@@ -1095,11 +1133,19 @@ elif ss.phase == "playoff_wildcard_preview":
         pr = ss.playoff_wc = []
         for t1, t2 in [(seeds[2], seeds[5]), (seeds[3], seeds[4])]:
             if t1 == ss.your_team:
-                s1, _ = score_lineup(ss.my_lineup)
-                s2 = sim_team_score(ss.team_strengths[t2])
+                s1, my_scores = score_lineup(ss.my_lineup)
+                opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                s2, opp_scores = score_lineup(opp_lineup)
+                ss.week_player_scores = my_scores
+                ss.opp_player_scores  = opp_scores
+                ss.opp_team_name      = t2
             elif t2 == ss.your_team:
-                s1 = sim_team_score(ss.team_strengths[t1])
-                s2, _ = score_lineup(ss.my_lineup)
+                opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                s1, opp_scores = score_lineup(opp_lineup)
+                s2, my_scores = score_lineup(ss.my_lineup)
+                ss.week_player_scores = my_scores
+                ss.opp_player_scores  = opp_scores
+                ss.opp_team_name      = t1
             else:
                 s1 = sim_team_score(ss.team_strengths[t1])
                 s2 = sim_team_score(ss.team_strengths[t2])
@@ -1126,6 +1172,9 @@ elif ss.phase == "playoff_wildcard_results":
             st.success("✅ You advance to the Semifinals!")
         else:
             st.error("❌ Your season is over. Better luck next year.")
+
+    if ss.week_player_scores:
+        render_playoff_scorecard()
 
     if st.button("➡️ Advance to Semifinals", type="primary"):
         ss.phase = "playoff_semis_preview"
@@ -1157,11 +1206,19 @@ elif ss.phase == "playoff_semis_preview":
         results = []
         for t1, t2 in semi_matchups:
             if t1 == ss.your_team:
-                s1, _ = score_lineup(ss.my_lineup)
-                s2 = sim_team_score(ss.team_strengths[t2])
+                s1, my_scores = score_lineup(ss.my_lineup)
+                opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                s2, opp_scores = score_lineup(opp_lineup)
+                ss.week_player_scores = my_scores
+                ss.opp_player_scores  = opp_scores
+                ss.opp_team_name      = t2
             elif t2 == ss.your_team:
-                s1 = sim_team_score(ss.team_strengths[t1])
-                s2, _ = score_lineup(ss.my_lineup)
+                opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                s1, opp_scores = score_lineup(opp_lineup)
+                s2, my_scores = score_lineup(ss.my_lineup)
+                ss.week_player_scores = my_scores
+                ss.opp_player_scores  = opp_scores
+                ss.opp_team_name      = t1
             else:
                 s1 = sim_team_score(ss.team_strengths[t1])
                 s2 = sim_team_score(ss.team_strengths[t2])
@@ -1190,6 +1247,9 @@ elif ss.phase == "playoff_semis_results":
         else:
             st.error("❌ You lost in the Semis. So close!")
 
+    if ss.week_player_scores:
+        render_playoff_scorecard()
+
     if st.button("➡️ Advance to Championship", type="primary"):
         ss.phase = "playoff_champ_preview"
         st.rerun()
@@ -1217,11 +1277,19 @@ elif ss.phase == "playoff_champ_preview":
     if st.button("🏈 Simulate Championship", type="primary"):
         t1, t2 = finalists
         if t1 == ss.your_team:
-            s1, _ = score_lineup(ss.my_lineup)
-            s2 = sim_team_score(ss.team_strengths[t2])
+            s1, my_scores = score_lineup(ss.my_lineup)
+            opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+            s2, opp_scores = score_lineup(opp_lineup)
+            ss.week_player_scores = my_scores
+            ss.opp_player_scores  = opp_scores
+            ss.opp_team_name      = t2
         elif t2 == ss.your_team:
-            s1 = sim_team_score(ss.team_strengths[t1])
-            s2, _ = score_lineup(ss.my_lineup)
+            opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+            s1, opp_scores = score_lineup(opp_lineup)
+            s2, my_scores = score_lineup(ss.my_lineup)
+            ss.week_player_scores = my_scores
+            ss.opp_player_scores  = opp_scores
+            ss.opp_team_name      = t1
         else:
             s1 = sim_team_score(ss.team_strengths[t1])
             s2 = sim_team_score(ss.team_strengths[t2])
@@ -1248,6 +1316,9 @@ elif ss.phase == "playoff_champ_results":
         st.success("🥳 That's YOU! Congratulations, Champion!")
     elif ss.your_team in (t1, t2):
         st.error("Runner-up — so close!")
+
+    if ss.week_player_scores:
+        render_playoff_scorecard()
 
     st.divider()
     st.subheader("📊 Final Regular Season Standings")
