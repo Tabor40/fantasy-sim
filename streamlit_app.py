@@ -860,7 +860,7 @@ elif ss.phase == "draft":
 # PHASE: SEASON + PLAYOFFS (tabbed layout)
 # ══════════════════════════════════════════════════════════════
 else:
-    _tab_main, _tab_team, _tab_standings = st.tabs(["📋 Season", "🏈 My Team", "🏆 Standings"])
+    _tab_main, _tab_team, _tab_standings, _tab_trade = st.tabs(["📋 Season", "🏈 My Team", "🏆 Standings", "🔄 Trade"])
 
     with _tab_team:
         render_my_team_panel()
@@ -872,6 +872,92 @@ else:
             st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
         else:
             st.info("No games played yet — standings will appear after Week 1.")
+
+    with _tab_trade:
+        st.markdown("### 🔄 Propose a Trade")
+        my_roster = ss.rosters.get(ss.your_team, [])
+        cpu_teams = [t for t in ss.rosters if t != ss.your_team]
+
+        if not my_roster:
+            st.info("Your roster isn't set yet — complete the draft first.")
+        else:
+            t_col1, t_col2 = st.columns(2)
+            with t_col1:
+                trade_target = st.selectbox("Trade with", cpu_teams, key="trade_target")
+            their_roster = ss.rosters.get(trade_target, [])
+
+            def player_label(p):
+                pos  = get_player_pos(p)
+                proj = get_player_proj(p) / 17
+                team = get_player_team(p)
+                return f"{p} ({pos}, {team}, ~{proj:.1f} pts/wk)"
+
+            t_col3, t_col4 = st.columns(2)
+            with t_col3:
+                st.markdown(f"**You offer:**")
+                give = st.multiselect("Players you give up", my_roster,
+                                      format_func=player_label, key="trade_give")
+            with t_col4:
+                st.markdown(f"**You receive:**")
+                get_players = st.multiselect(f"Players from {trade_target}", their_roster,
+                                              format_func=player_label, key="trade_get")
+
+            if give and get_players:
+                give_val = sum(get_player_proj(p) for p in give)
+                get_val  = sum(get_player_proj(p) for p in get_players)
+                ratio    = get_val / give_val if give_val > 0 else 0
+                st.divider()
+
+                # Show value comparison
+                vc1, vc2 = st.columns(2)
+                with vc1:
+                    st.metric("Your offer value", f"{give_val/17:.1f} pts/wk")
+                with vc2:
+                    st.metric("Their offer value", f"{get_val/17:.1f} pts/wk")
+
+                # CPU acceptance logic: accepts if within 20% value, more lenient if you're giving more
+                if ratio >= 0.82:
+                    st.success("✅ CPU will likely **accept** this trade.")
+                elif ratio >= 0.65:
+                    st.warning("⚠️ CPU might **counter or reject** — you're giving up more value.")
+                else:
+                    st.error("❌ CPU will likely **reject** — too lopsided against them.")
+
+                if st.button("📨 Propose Trade", type="primary", key="submit_trade"):
+                    import random
+                    accepted = ratio >= 0.82 or (ratio >= 0.65 and random.random() > 0.5)
+                    if accepted:
+                        # Execute the trade
+                        for p in give:
+                            ss.rosters[ss.your_team].remove(p)
+                            ss.rosters[trade_target].append(p)
+                        for p in get_players:
+                            ss.rosters[trade_target].remove(p)
+                            ss.rosters[ss.your_team].append(p)
+                        # Clear any traded players from lineup
+                        for slot, player in list(ss.my_lineup.items()):
+                            if player in give:
+                                ss.my_lineup[slot] = None
+                        if "trade_history" not in ss:
+                            ss.trade_history = []
+                        ss.trade_history.append({
+                            "week": ss.current_week,
+                            "gave": give, "got": get_players, "with": trade_target
+                        })
+                        st.success(f"🤝 Trade accepted! You got {', '.join(get_players)} from {trade_target}.")
+                        st.rerun()
+                    else:
+                        st.error(f"❌ {trade_target} rejected your offer.")
+            elif give or get_players:
+                st.info("Select players on both sides to propose a trade.")
+
+            # Trade history
+            history = getattr(ss, "trade_history", [])
+            if history:
+                st.divider()
+                st.markdown("**📜 Trade History**")
+                for h in reversed(history):
+                    st.write(f"Wk {h['week']} — You gave **{', '.join(h['gave'])}** to {h['with']} · Got **{', '.join(h['got'])}**")
 
     with _tab_main:
 
