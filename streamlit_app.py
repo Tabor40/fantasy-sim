@@ -1325,7 +1325,7 @@ elif ss.phase == "playoff_champ_results":
     elif ss.your_team in (t1, t2):
         st.error("Runner-up — so close!")
 
-    if ss.week_player_scores:
+    if ss.week_player_scores and ss.your_team in (t1, t2):
         render_playoff_scorecard()
 
     st.divider()
