@@ -860,10 +860,18 @@ elif ss.phase == "draft":
 # PHASE: SEASON + PLAYOFFS (tabbed layout)
 # ══════════════════════════════════════════════════════════════
 else:
-    _tab_main, _tab_team = st.tabs(["📋 Season", "🏈 My Team"])
+    _tab_main, _tab_team, _tab_standings = st.tabs(["📋 Season", "🏈 My Team", "🏆 Standings"])
 
     with _tab_team:
         render_my_team_panel()
+
+    with _tab_standings:
+        st.markdown(f"### League Standings — Through Week {ss.current_week - 1}")
+        all_teams = list(ss.rosters.keys())
+        if ss.weekly_results:
+            st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
+        else:
+            st.info("No games played yet — standings will appear after Week 1.")
 
     with _tab_main:
 
