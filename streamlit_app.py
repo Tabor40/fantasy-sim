@@ -193,7 +193,7 @@ player_data = [
     {"player": "Minnesota Vikings",        "pos": "DEF", "proj": 100, "team": "MIN", "adp": 174.0},
     {"player": "Los Angeles Rams",         "pos": "DEF", "proj":  95, "team": "LAR", "adp": 176.0},
 ]
-players_df = pd.DataFrame(player_data).sort_values("proj", ascending=False).reset_index(drop=True)
+players_df = pd.DataFrame(player_data).sort_values("adp", ascending=True).reset_index(drop=True)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 SCORE_MIN   = 88.0
@@ -450,7 +450,7 @@ if ss.phase == "setup":
     if st.button("🏈 Start Draft"):
         ss.rosters       = {f"Team {i+1}": [] for i in range(NUM_TEAMS)}
         ss.rosters[ss.your_team] = []
-        ss.drafted       = players_df.copy()
+        ss.drafted       = players_df.sort_values("adp", ascending=True).reset_index(drop=True).copy()
         ss.current_pick  = 0
         ss.weekly_results = []
         ss.current_week  = 1
@@ -566,9 +566,45 @@ elif ss.phase == "draft":
     pct       = ss.current_pick / TOTAL_PICKS * 100
 
     def cpu_pick(team_name):
-        best = ss.drafted.iloc[0]
+        # Count current positional needs for this team
+        roster = ss.rosters.get(team_name, [])
+        pos_counts = {}
+        for p in roster:
+            pos = get_player_pos(p)
+            pos_counts[pos] = pos_counts.get(pos, 0) + 1
+
+        # Positional maximums — don't overdraft a position
+        pos_max = {"QB": 2, "RB": 6, "WR": 7, "TE": 2, "K": 1, "DEF": 1}
+        round_num = len(roster) + 1
+
+        # Late rounds: force K and DEF if not drafted
+        if round_num >= 13 and pos_counts.get("K", 0) == 0:
+            k_options = ss.drafted[ss.drafted["pos"] == "K"]
+            if not k_options.empty:
+                best = k_options.iloc[0]
+                ss.rosters[team_name].append(best["player"])
+                ss.drafted = ss.drafted[ss.drafted["player"] != best["player"]].reset_index(drop=True)
+                ss.current_pick += 1
+                return
+        if round_num >= 14 and pos_counts.get("DEF", 0) == 0:
+            d_options = ss.drafted[ss.drafted["pos"] == "DEF"]
+            if not d_options.empty:
+                best = d_options.iloc[0]
+                ss.rosters[team_name].append(best["player"])
+                ss.drafted = ss.drafted[ss.drafted["player"] != best["player"]].reset_index(drop=True)
+                ss.current_pick += 1
+                return
+
+        # Filter out overstocked positions, pick best ADP available
+        available = ss.drafted[
+            ss.drafted["pos"].apply(lambda p: pos_counts.get(p, 0) < pos_max.get(p, 99))
+        ]
+        if available.empty:
+            available = ss.drafted  # fallback
+
+        best = available.iloc[0]
         ss.rosters[team_name].append(best["player"])
-        ss.drafted = ss.drafted.iloc[1:]
+        ss.drafted = ss.drafted[ss.drafted["player"] != best["player"]].reset_index(drop=True)
         ss.current_pick += 1
 
     def pos_badge(pos):
