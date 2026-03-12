@@ -525,7 +525,7 @@ elif ss.phase == "draft":
         cls = f"pos-{pos.lower()}"
         return f'<span class="{cls}">{pos}</span>'
 
-    # ── On-the-clock banner ───────────────────────────────────
+    # ── On-the-clock banner + action controls ────────────────
     you_tag = '<span class="otc-you">⭐ YOUR PICK</span>' if is_yours else ''
     st.markdown(f"""
     <div class="otc-banner">
@@ -539,6 +539,38 @@ elif ss.phase == "draft":
         <div class="draft-progress-fill" style="width:{pct:.1f}%"></div>
     </div>
     """, unsafe_allow_html=True)
+
+    # ── Draft action bar — sits right below the banner ────────
+    if is_yours:
+        ac1, ac2 = st.columns([1, 1])
+        with ac1:
+            if st.button("⚡ Auto-Pick Best Available", use_container_width=True, type="primary"):
+                cpu_pick(ss.your_team)
+                st.rerun()
+    else:
+        ac1, ac2, ac3 = st.columns(3)
+        with ac1:
+            if st.button("▶️ CPU Picks Once", use_container_width=True, type="primary"):
+                cpu_pick(curr_name)
+                st.rerun()
+        with ac2:
+            if st.button("⏩ Skip to My Pick", use_container_width=True):
+                while ss.current_pick < TOTAL_PICKS:
+                    cn = draft_order[ss.current_pick]
+                    if cn == ss.your_pick_pos:
+                        break
+                    nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
+                    cpu_pick(nm)
+                st.rerun()
+        with ac3:
+            if st.button("⏭️ Auto-Complete Draft", use_container_width=True):
+                while ss.current_pick < TOTAL_PICKS:
+                    cn = draft_order[ss.current_pick]
+                    nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
+                    cpu_pick(nm)
+                st.rerun()
+
+    st.markdown("<div style='margin-bottom:8px'></div>", unsafe_allow_html=True)
 
     # ── Two-column layout: players left, roster right ─────────
     left_col, right_col = st.columns([3, 2])
@@ -576,41 +608,11 @@ elif ss.phase == "draft":
                     )
                 with btn_col:
                     if is_yours:
-                        if st.button("Draft", key=f"pick_{i}_{row['player']}", use_container_width=True):
+                        if st.button("➕ Draft Player", key=f"pick_{i}_{row['player']}", use_container_width=True, type="primary"):
                             ss.rosters[ss.your_team].append(row["player"])
                             ss.drafted = ss.drafted[ss.drafted["player"] != row["player"]]
                             ss.current_pick += 1
                             st.rerun()
-
-        # CPU controls (shown below list when not your pick)
-        if not is_yours:
-            st.markdown("---")
-            ca, cb, cc = st.columns(3)
-            with ca:
-                if st.button("▶️ CPU Picks Once", use_container_width=True):
-                    cpu_pick(curr_name)
-                    st.rerun()
-            with cb:
-                if st.button("⏩ Skip to My Pick", use_container_width=True):
-                    while ss.current_pick < TOTAL_PICKS:
-                        cn = draft_order[ss.current_pick]
-                        if cn == ss.your_pick_pos:
-                            break
-                        nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
-                        cpu_pick(nm)
-                    st.rerun()
-            with cc:
-                if st.button("⏭️ Auto-Complete", use_container_width=True):
-                    while ss.current_pick < TOTAL_PICKS:
-                        cn = draft_order[ss.current_pick]
-                        nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
-                        cpu_pick(nm)
-                    st.rerun()
-        else:
-            st.markdown("---")
-            if st.button("⚡ Auto-Pick Best Available", use_container_width=True):
-                cpu_pick(ss.your_team)
-                st.rerun()
 
     with right_col:
         st.markdown("#### 📋 Your Roster")
