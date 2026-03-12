@@ -1021,7 +1021,6 @@ elif ss.phase == "week_results":
                         "Pos":    get_player_pos(player),
                         "Score":  score,
                         "Proj":   f"{get_player_proj(player)/17:.1f}",
-                        "Status": "💤 BYE" if on_bye else "✅",
                     })
             return pd.DataFrame(rows)
 
