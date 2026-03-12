@@ -414,67 +414,66 @@ def render_my_team_panel():
     if not roster:
         return
 
-    with st.sidebar:
-        st.markdown(f"### 🏈 {ss.your_team}")
+    st.markdown(f"### 🏈 {ss.your_team}")
 
-        # ── Lineup Editor ──────────────────────────────────────────────────
-        st.markdown("**📋 Starting Lineup**")
-        if st.button("⚡ Auto-Set Best Lineup", key="auto_lineup"):
-            ss.my_lineup = auto_set_lineup(roster)
-            st.rerun()
+    # ── Lineup Editor ──────────────────────────────────────────────────
+    st.markdown("**📋 Starting Lineup**")
+    if st.button("⚡ Auto-Set Best Lineup", key="auto_lineup"):
+        ss.my_lineup = auto_set_lineup(roster)
+        st.rerun()
 
-        new_lineup = {}
-        all_used = []  # track picks to warn on duplicates
+    new_lineup = {}
+    all_used = []  # track picks to warn on duplicates
 
-        for slot, eligible_pos in LINEUP_SLOTS.items():
-            eligible = [p for p in roster if get_player_pos(p) in eligible_pos]
-            options = ["-- Empty --"] + eligible
-            current = ss.my_lineup.get(slot)
-            idx = options.index(current) if current in options else 0
+    for slot, eligible_pos in LINEUP_SLOTS.items():
+        eligible = [p for p in roster if get_player_pos(p) in eligible_pos]
+        options = ["-- Empty --"] + eligible
+        current = ss.my_lineup.get(slot)
+        idx = options.index(current) if current in options else 0
 
-            # Show proj + team + bye warning next to slot label
-            proj_label = ""
-            if current and current in roster:
-                team_tag = get_player_team(current)
-                bye_wk   = BYE_WEEKS.get(team_tag, "—")
-                bye_warn = f" ⚠️BYE" if bye_wk == ss.current_week else ""
-                proj_label = f"  _{team_tag} · ~{get_player_proj(current)/17:.1f} proj{bye_warn}_"
+        # Show proj + team + bye warning next to slot label
+        proj_label = ""
+        if current and current in roster:
+            team_tag = get_player_team(current)
+            bye_wk   = BYE_WEEKS.get(team_tag, "—")
+            bye_warn = f" ⚠️BYE" if bye_wk == ss.current_week else ""
+            proj_label = f"  _{team_tag} · ~{get_player_proj(current)/17:.1f} proj{bye_warn}_"
 
-            chosen = st.selectbox(
-                f"{slot}{proj_label}",
-                options,
-                index=idx,
-                key=f"lineup_{slot}"
-            )
-            new_lineup[slot] = chosen if chosen != "-- Empty --" else None
-            if new_lineup[slot]:
-                all_used.append(new_lineup[slot])
+        chosen = st.selectbox(
+            f"{slot}{proj_label}",
+            options,
+            index=idx,
+            key=f"lineup_{slot}"
+        )
+        new_lineup[slot] = chosen if chosen != "-- Empty --" else None
+        if new_lineup[slot]:
+            all_used.append(new_lineup[slot])
 
-        # Warn on duplicates
-        dupes = [p for p in all_used if all_used.count(p) > 1]
-        if dupes:
-            st.warning(f"⚠️ Duplicate players: {', '.join(set(dupes))}")
-        else:
-            if new_lineup != ss.my_lineup:
-                ss.my_lineup = new_lineup
+    # Warn on duplicates
+    dupes = [p for p in all_used if all_used.count(p) > 1]
+    if dupes:
+        st.warning(f"⚠️ Duplicate players: {', '.join(set(dupes))}")
+    else:
+        if new_lineup != ss.my_lineup:
+            ss.my_lineup = new_lineup
 
-        st.divider()
+    st.divider()
 
-        # ── Full Roster ────────────────────────────────────────────────────
-        st.markdown("**📄 Full Roster**")
-        starters = list(ss.my_lineup.values())
-        current_wk = ss.current_week
-        rows = []
-        for p in roster:
-            pos   = get_player_pos(p)
-            proj  = get_player_proj(p)
-            team  = get_player_team(p)
-            bye   = BYE_WEEKS.get(team, "—")
-            role  = "🟢 Starter" if p in starters else "⚪ Bench"
-            bye_flag = f"💤 Wk {bye}" if bye == current_wk else f"Wk {bye}"
-            rows.append({"Player": p, "Team": team, "Pos": pos, "Proj": proj, "Bye": bye_flag, "Status": role})
-        df = pd.DataFrame(rows).sort_values(["Status", "Proj"], ascending=[True, False])
-        st.dataframe(df, use_container_width=True, hide_index=True)
+    # ── Full Roster ────────────────────────────────────────────────────
+    st.markdown("**📄 Full Roster**")
+    starters = list(ss.my_lineup.values())
+    current_wk = ss.current_week
+    rows = []
+    for p in roster:
+        pos   = get_player_pos(p)
+        proj  = get_player_proj(p)
+        team  = get_player_team(p)
+        bye   = BYE_WEEKS.get(team, "—")
+        role  = "🟢 Starter" if p in starters else "⚪ Bench"
+        bye_flag = f"💤 Wk {bye}" if bye == current_wk else f"Wk {bye}"
+        rows.append({"Player": p, "Team": team, "Pos": pos, "Proj": proj, "Bye": bye_flag, "Status": role})
+    df = pd.DataFrame(rows).sort_values(["Status", "Proj"], ascending=[True, False])
+    st.dataframe(df, use_container_width=True, hide_index=True)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -858,481 +857,480 @@ elif ss.phase == "draft":
 
 
 # ══════════════════════════════════════════════════════════════
-# PHASE: WEEK PREVIEW
+# PHASE: SEASON + PLAYOFFS (tabbed layout)
 # ══════════════════════════════════════════════════════════════
-elif ss.phase == "week_preview":
-    render_my_team_panel()
+else:
+    _tab_main, _tab_team = st.tabs(["📋 Season", "🏈 My Team"])
 
-    wk        = ss.current_week
-    matchups  = ss.schedule[wk - 1]
-    all_teams = list(ss.rosters.keys())
+    with _tab_team:
+        render_my_team_panel()
 
-    st.title(f"📅 Week {wk} of {WEEKS_REG}")
+    with _tab_main:
 
-    your_game = next(((t1,t2) for t1,t2 in matchups if ss.your_team in (t1,t2)), None)
-    if your_game:
-        opp = your_game[1] if your_game[0] == ss.your_team else your_game[0]
-        st.info(f"**Your matchup:** {ss.your_team} vs **{opp}**")
+    # ── Week Preview ──────────────────────────────────────────────
+        if ss.phase == "week_preview":
+            wk        = ss.current_week
+            matchups  = ss.schedule[wk - 1]
+            all_teams = list(ss.rosters.keys())
 
-        opp_roster = ss.rosters.get(opp, [])
-        if opp_roster:
-            with st.expander(f"🔍 Scout {opp}'s Roster", expanded=False):
-                opp_lineup = auto_set_lineup(opp_roster)
-                starters_set = set(opp_lineup.values())
-                rows = []
-                for slot, player in opp_lineup.items():
-                    if player:
-                        team   = get_player_team(player)
+            st.title(f"📅 Week {wk} of {WEEKS_REG}")
+
+            your_game = next(((t1,t2) for t1,t2 in matchups if ss.your_team in (t1,t2)), None)
+            if your_game:
+                opp = your_game[1] if your_game[0] == ss.your_team else your_game[0]
+                st.info(f"**Your matchup:** {ss.your_team} vs **{opp}**")
+
+                opp_roster = ss.rosters.get(opp, [])
+                if opp_roster:
+                    with st.expander(f"🔍 Scout {opp}'s Roster", expanded=False):
+                        opp_lineup = auto_set_lineup(opp_roster)
+                        starters_set = set(opp_lineup.values())
+                        rows = []
+                        for slot, player in opp_lineup.items():
+                            if player:
+                                team   = get_player_team(player)
+                                bye_wk = BYE_WEEKS.get(team, "—")
+                                rows.append({
+                                    "Slot":     slot,
+                                    "Player":   player,
+                                    "Team":     team,
+                                    "Pos":      get_player_pos(player),
+                                    "Proj/wk":  f"{get_player_proj(player)/17:.1f}",
+                                    "Bye Wk":   f"💤 THIS WEEK" if bye_wk == wk else str(bye_wk),
+                                    "Status":   "🟢 Starter",
+                                })
+                        bench = [p for p in opp_roster if p not in starters_set]
+                        for player in bench:
+                            team   = get_player_team(player)
+                            bye_wk = BYE_WEEKS.get(team, "—")
+                            rows.append({
+                                "Slot":     "BN",
+                                "Player":   player,
+                                "Team":     team,
+                                "Pos":      get_player_pos(player),
+                                "Proj/wk":  f"{get_player_proj(player)/17:.1f}",
+                                "Bye Wk":   f"💤 THIS WEEK" if bye_wk == wk else str(bye_wk),
+                                "Status":   "⚪ Bench",
+                            })
+                        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
+        # Lineup summary callout
+            starters = {s: p for s, p in ss.my_lineup.items() if p}
+            if starters:
+                with st.expander("📋 Your starting lineup this week", expanded=False):
+                    rows = []
+                    for s, p in starters.items():
+                        team   = get_player_team(p)
                         bye_wk = BYE_WEEKS.get(team, "—")
+                        on_bye = bye_wk == wk
                         rows.append({
-                            "Slot":     slot,
-                            "Player":   player,
-                            "Team":     team,
-                            "Pos":      get_player_pos(player),
-                            "Proj/wk":  f"{get_player_proj(player)/17:.1f}",
-                            "Bye Wk":   f"💤 THIS WEEK" if bye_wk == wk else str(bye_wk),
-                            "Status":   "🟢 Starter",
+                            "Slot": s, "Player": p,
+                            "Team": team,
+                            "Pos":  get_player_pos(p),
+                            "Wkly Proj": f"{get_player_proj(p)/17:.1f}",
+                            "Bye Wk": f"💤 THIS WEEK" if on_bye else str(bye_wk),
                         })
-                bench = [p for p in opp_roster if p not in starters_set]
-                for player in bench:
-                    team   = get_player_team(player)
-                    bye_wk = BYE_WEEKS.get(team, "—")
-                    rows.append({
-                        "Slot":     "BN",
-                        "Player":   player,
-                        "Team":     team,
-                        "Pos":      get_player_pos(player),
-                        "Proj/wk":  f"{get_player_proj(player)/17:.1f}",
-                        "Bye Wk":   f"💤 THIS WEEK" if bye_wk == wk else str(bye_wk),
-                        "Status":   "⚪ Bench",
-                    })
+                    df_lineup = pd.DataFrame(rows)
+                # Warn about bye players
+                    bye_starters = [r["Player"] for _, r in df_lineup.iterrows() if r["Bye Wk"] == "💤 THIS WEEK"]
+                    if bye_starters:
+                        st.warning(f"⚠️ On bye this week: {', '.join(bye_starters)} — consider benching them!")
+                    st.dataframe(df_lineup, use_container_width=True, hide_index=True)
+                    missing = [s for s in STARTER_SLOTS if not ss.my_lineup.get(s)]
+                    if missing:
+                        st.warning(f"⚠️ Empty slots: {', '.join(missing)} — set your lineup in the sidebar!")
+            else:
+                st.warning("⚠️ No lineup set! Use the sidebar to set your starters.")
+
+            st.markdown("**This week's matchups:**")
+            for t1, t2 in matchups:
+                tag = "  👈 your game" if ss.your_team in (t1, t2) else ""
+                st.write(f"• {t1} vs {t2}{tag}")
+
+            if ss.weekly_results:
+                with st.expander("📊 Current standings"):
+                    st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
+
+            st.divider()
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.button(f"🏈 Simulate Week {wk}", type="primary"):
+                    results = []
+                    for t1, t2 in matchups:
+                        if t1 == ss.your_team:
+                            s1, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
+                            opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                            s2, opp_scores = score_lineup(opp_lineup, nfl_week=wk)
+                            ss.week_player_scores = player_scores
+                            ss.opp_player_scores  = opp_scores
+                            ss.opp_team_name      = t2
+                        elif t2 == ss.your_team:
+                            s2, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
+                            opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                            s1, opp_scores = score_lineup(opp_lineup, nfl_week=wk)
+                            ss.week_player_scores = player_scores
+                            ss.opp_player_scores  = opp_scores
+                            ss.opp_team_name      = t1
+                        else:
+                            s1 = sim_team_score(ss.team_strengths[t1])
+                            s2 = sim_team_score(ss.team_strengths[t2])
+                        results.append((t1, t2, s1, s2))
+                    ss.weekly_results.append({"week": wk, "matchups": results})
+                    ss.week_results = results
+                    ss.phase = "week_results"
+                    st.rerun()
+            with c2:
+                if st.button("⏩ Sim Rest of Season"):
+                    for w in range(wk, WEEKS_REG + 1):
+                        week_matchups = ss.schedule[w - 1]
+                        results = []
+                        for t1, t2 in week_matchups:
+                            if t1 == ss.your_team:
+                                s1, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
+                                opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                                s2, opp_scores = score_lineup(opp_lineup, nfl_week=w)
+                                if w == WEEKS_REG:
+                                    ss.week_player_scores = player_scores
+                                    ss.opp_player_scores  = opp_scores
+                                    ss.opp_team_name      = t2
+                            elif t2 == ss.your_team:
+                                s2, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
+                                opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                                s1, opp_scores = score_lineup(opp_lineup, nfl_week=w)
+                                if w == WEEKS_REG:
+                                    ss.week_player_scores = player_scores
+                                    ss.opp_player_scores  = opp_scores
+                                    ss.opp_team_name      = t1
+                            else:
+                                s1 = sim_team_score(ss.team_strengths[t1])
+                                s2 = sim_team_score(ss.team_strengths[t2])
+                            results.append((t1, t2, s1, s2))
+                        ss.weekly_results.append({"week": w, "matchups": results})
+                        if w == WEEKS_REG:
+                            ss.week_results = results
+                    ss.current_week = WEEKS_REG
+                    ss.phase = "week_results"
+                    st.rerun()
+
+
+    # ══════════════════════════════════════════════════════════════
+    # PHASE: WEEK RESULTS
+    # ══════════════════════════════════════════════════════════════
+        if ss.phase == "week_results":
+            wk        = ss.current_week
+            results   = ss.week_results
+            all_teams = list(ss.rosters.keys())
+
+            st.title(f"📋 Week {wk} Results")
+
+        # League scores
+            for t1, t2, s1, s2 in results:
+                winner   = t1 if s1 > s2 else (t2 if s2 > s1 else "Tie")
+                is_yours = ss.your_team in (t1, t2)
+                prefix   = "🏈 " if is_yours else ""
+                st.write(f"{prefix}**{t1}** {s1} – {s2} **{t2}**  →  Winner: **{winner}**")
+
+        # User result banner
+            your_result = next((r for r in results if ss.your_team in (r[0], r[1])), None)
+            if your_result:
+                t1, t2, s1, s2 = your_result
+                ys = s1 if t1 == ss.your_team else s2
+                os = s2 if t1 == ss.your_team else s1
+                on = t2 if t1 == ss.your_team else t1
+                st.divider()
+                if ys > os:
+                    st.success(f"✅ You won!  {ss.your_team} **{ys}** – **{os}** {on}")
+                elif ys < os:
+                    st.error(f"❌ You lost.  {ss.your_team} **{ys}** – **{os}** {on}")
+                else:
+                    st.warning(f"🤝 Tie.  {ys} – {os}")
+
+        # ── Side-by-side matchup scorecard ───────────────────────────────────────
+            if ss.week_player_scores:
+                opp_name = ss.opp_team_name or "Opponent"
+
+                def build_score_rows(score_dict):
+                    rows = []
+                    for slot, val in score_dict.items():
+                        player = val[0] if val else None
+                        score  = val[1] if len(val) > 1 else 0.0
+                        on_bye = val[2] if len(val) > 2 else False
+                        if player:
+                            rows.append({
+                                "Slot":   slot,
+                                "Player": player,
+                                "Team":   get_player_team(player),
+                                "Pos":    get_player_pos(player),
+                                "Score":  score,
+                                "Proj":   f"{get_player_proj(player)/17:.1f}",
+                            })
+                    return pd.DataFrame(rows)
+
+                with st.expander("📊 Matchup Scorecard", expanded=True):
+                    mc1, mc2 = st.columns(2)
+
+                    with mc1:
+                        my_df = build_score_rows(ss.week_player_scores)
+                        my_total = round(my_df["Score"].sum(), 2) if not my_df.empty else 0.0
+                        st.markdown(f"### 🏈 {ss.your_team}")
+                        st.metric("Total Score", my_total)
+                        st.dataframe(my_df, use_container_width=True, hide_index=True)
+
+                    with mc2:
+                        opp_df = build_score_rows(ss.opp_player_scores) if ss.opp_player_scores else pd.DataFrame()
+                        opp_total = round(opp_df["Score"].sum(), 2) if not opp_df.empty else 0.0
+                        st.markdown(f"### 🆚 {opp_name}")
+                        st.metric("Total Score", opp_total)
+                        if not opp_df.empty:
+                            st.dataframe(opp_df, use_container_width=True, hide_index=True)
+                        else:
+                            st.info("No opponent lineup data available.")
+
+            with st.expander("📊 Standings after Week {wk}"):
+                st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
+
+            st.divider()
+            if wk < WEEKS_REG:
+                if st.button(f"➡️ Go to Week {wk + 1}", type="primary"):
+                    ss.current_week += 1
+                    ss.phase = "week_preview"
+                    st.rerun()
+            else:
+                st.success("🎉 Regular season complete! Time for the playoffs.")
+                if st.button("🏆 Begin Playoffs", type="primary"):
+                    final         = get_standings(ss.weekly_results, all_teams)
+                    ss.playoff_seeds = final.head(6)["Team"].tolist()
+                    ss.phase      = "playoff_wildcard_preview"
+                    st.rerun()
+
+
+    # ══════════════════════════════════════════════════════════════
+    # PHASE: PLAYOFF WILD CARD PREVIEW
+    # ══════════════════════════════════════════════════════════════
+        if ss.phase == "playoff_wildcard_preview":
+            seeds = ss.playoff_seeds
+            st.title("🏆 Playoffs — Week 15: Wild Card")
+            st.markdown("**Seeds 1 & 2 have byes.**")
+            st.write(f"• (3) **{seeds[2]}** vs (6) **{seeds[5]}**")
+            st.write(f"• (4) **{seeds[3]}** vs (5) **{seeds[4]}**")
+
+            if ss.your_team in seeds[:2]:
+                st.info(f"✅ You ({ss.your_team}) have a bye this week!")
+            elif ss.your_team in seeds[2:]:
+                idx = seeds.index(ss.your_team)
+                opp_idx = {2:5, 3:4, 4:3, 5:2}.get(idx, None)
+                if opp_idx is not None:
+                    st.info(f"**Your matchup:** {ss.your_team} vs {seeds[opp_idx]}")
+            else:
+                st.warning(f"{ss.your_team} did not make the playoffs.")
+
+        # Lineup summary
+            with st.expander("📋 Your lineup for Wild Card"):
+                starters = {s: p for s, p in ss.my_lineup.items() if p}
+                rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
+                         "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
+                        for s, p in starters.items()]
                 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-    # Lineup summary callout
-    starters = {s: p for s, p in ss.my_lineup.items() if p}
-    if starters:
-        with st.expander("📋 Your starting lineup this week", expanded=False):
-            rows = []
-            for s, p in starters.items():
-                team   = get_player_team(p)
-                bye_wk = BYE_WEEKS.get(team, "—")
-                on_bye = bye_wk == wk
-                rows.append({
-                    "Slot": s, "Player": p,
-                    "Team": team,
-                    "Pos":  get_player_pos(p),
-                    "Wkly Proj": f"{get_player_proj(p)/17:.1f}",
-                    "Bye Wk": f"💤 THIS WEEK" if on_bye else str(bye_wk),
-                })
-            df_lineup = pd.DataFrame(rows)
-            # Warn about bye players
-            bye_starters = [r["Player"] for _, r in df_lineup.iterrows() if r["Bye Wk"] == "💤 THIS WEEK"]
-            if bye_starters:
-                st.warning(f"⚠️ On bye this week: {', '.join(bye_starters)} — consider benching them!")
-            st.dataframe(df_lineup, use_container_width=True, hide_index=True)
-            missing = [s for s in STARTER_SLOTS if not ss.my_lineup.get(s)]
-            if missing:
-                st.warning(f"⚠️ Empty slots: {', '.join(missing)} — set your lineup in the sidebar!")
-    else:
-        st.warning("⚠️ No lineup set! Use the sidebar to set your starters.")
+            if st.button("🏈 Simulate Wild Card", type="primary"):
+                pr = ss.playoff_wc = []
+                for t1, t2 in [(seeds[2], seeds[5]), (seeds[3], seeds[4])]:
+                    if t1 == ss.your_team:
+                        s1, my_scores = score_lineup(ss.my_lineup)
+                        opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                        s2, opp_scores = score_lineup(opp_lineup)
+                        ss.week_player_scores = my_scores
+                        ss.opp_player_scores  = opp_scores
+                        ss.opp_team_name      = t2
+                    elif t2 == ss.your_team:
+                        opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                        s1, opp_scores = score_lineup(opp_lineup)
+                        s2, my_scores = score_lineup(ss.my_lineup)
+                        ss.week_player_scores = my_scores
+                        ss.opp_player_scores  = opp_scores
+                        ss.opp_team_name      = t1
+                    else:
+                        s1 = sim_team_score(ss.team_strengths[t1])
+                        s2 = sim_team_score(ss.team_strengths[t2])
+                    w = t1 if s1 >= s2 else t2
+                    pr.append((t1, t2, s1, s2, w))
+                ss.phase = "playoff_wildcard_results"
+                st.rerun()
 
-    st.markdown("**This week's matchups:**")
-    for t1, t2 in matchups:
-        tag = "  👈 your game" if ss.your_team in (t1, t2) else ""
-        st.write(f"• {t1} vs {t2}{tag}")
 
-    if ss.weekly_results:
-        with st.expander("📊 Current standings"):
-            st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
+    # ══════════════════════════════════════════════════════════════
+    # PHASE: PLAYOFF WILD CARD RESULTS
+    # ══════════════════════════════════════════════════════════════
+        if ss.phase == "playoff_wildcard_results":
+            st.title("📋 Wild Card Results")
+            for t1, t2, s1, s2, w in ss.playoff_wc:
+                is_yours = ss.your_team in (t1, t2)
+                st.write(f"{'🏈 ' if is_yours else ''}**{t1}** {s1} – {s2} **{t2}**  →  **{w} advances**")
 
-    st.divider()
-    c1, c2 = st.columns(2)
-    with c1:
-        if st.button(f"🏈 Simulate Week {wk}", type="primary"):
-            results = []
-            for t1, t2 in matchups:
+            your_wc = next((r for r in ss.playoff_wc if ss.your_team in (r[0], r[1])), None)
+            if your_wc:
+                st.divider()
+                if your_wc[4] == ss.your_team:
+                    st.success("✅ You advance to the Semifinals!")
+                else:
+                    st.error("❌ Your season is over. Better luck next year.")
+
+            if ss.week_player_scores:
+                render_playoff_scorecard()
+
+            if st.button("➡️ Advance to Semifinals", type="primary"):
+                ss.phase = "playoff_semis_preview"
+                st.rerun()
+
+
+    # ══════════════════════════════════════════════════════════════
+    # PHASE: PLAYOFF SEMIS PREVIEW
+    # ══════════════════════════════════════════════════════════════
+        if ss.phase == "playoff_semis_preview":
+            seeds   = ss.playoff_seeds
+            wc_wins = [r[4] for r in ss.playoff_wc]
+            semi_matchups = [(seeds[0], wc_wins[1]), (seeds[1], wc_wins[0])]
+
+            st.title("🏆 Playoffs — Week 16: Semifinals")
+            user_in_semis = ss.your_team in [t for pair in semi_matchups for t in pair]
+            for t1, t2 in semi_matchups:
+                tag = "  👈 your game" if user_in_semis and ss.your_team in (t1, t2) else ""
+                st.write(f"• **{t1}** vs **{t2}**{tag}")
+            if user_in_semis:
+                with st.expander("📋 Your lineup for Semis"):
+                    starters = {s: p for s, p in ss.my_lineup.items() if p}
+                    rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
+                             "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
+                            for s, p in starters.items()]
+                    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+            else:
+                st.info("📺 Your season ended in the Wild Card. Watching from the couch.")
+
+            if st.button("🏈 Simulate Semifinals", type="primary"):
+                results = []
+                for t1, t2 in semi_matchups:
+                    if t1 == ss.your_team:
+                        s1, my_scores = score_lineup(ss.my_lineup)
+                        opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                        s2, opp_scores = score_lineup(opp_lineup)
+                        ss.week_player_scores = my_scores
+                        ss.opp_player_scores  = opp_scores
+                        ss.opp_team_name      = t2
+                    elif t2 == ss.your_team:
+                        opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                        s1, opp_scores = score_lineup(opp_lineup)
+                        s2, my_scores = score_lineup(ss.my_lineup)
+                        ss.week_player_scores = my_scores
+                        ss.opp_player_scores  = opp_scores
+                        ss.opp_team_name      = t1
+                    else:
+                        s1 = sim_team_score(ss.team_strengths[t1])
+                        s2 = sim_team_score(ss.team_strengths[t2])
+                    w = t1 if s1 >= s2 else t2
+                    results.append((t1, t2, s1, s2, w))
+                ss.playoff_semis = results
+                ss.phase = "playoff_semis_results"
+                st.rerun()
+
+
+    # ══════════════════════════════════════════════════════════════
+    # PHASE: PLAYOFF SEMIS RESULTS
+    # ══════════════════════════════════════════════════════════════
+        if ss.phase == "playoff_semis_results":
+            st.title("📋 Semifinals Results")
+            for t1, t2, s1, s2, w in ss.playoff_semis:
+                is_yours = ss.your_team in (t1, t2)
+                st.write(f"{'🏈 ' if is_yours else ''}**{t1}** {s1} – {s2} **{t2}**  →  **{w} advances**")
+
+            your_semi = next((r for r in ss.playoff_semis if ss.your_team in (r[0], r[1])), None)
+            if your_semi:
+                st.divider()
+                if your_semi[4] == ss.your_team:
+                    st.success("✅ You're in the Championship! 🏆")
+                else:
+                    st.error("❌ You lost in the Semis. So close!")
+
+            if ss.week_player_scores and your_semi:
+                render_playoff_scorecard()
+
+            if st.button("➡️ Advance to Championship", type="primary"):
+                ss.phase = "playoff_champ_preview"
+                st.rerun()
+
+
+    # ══════════════════════════════════════════════════════════════
+    # PHASE: CHAMPIONSHIP PREVIEW
+    # ══════════════════════════════════════════════════════════════
+        if ss.phase == "playoff_champ_preview":
+            finalists = [r[4] for r in ss.playoff_semis]
+            st.title("🏆 Playoffs — Week 17: Championship")
+            st.markdown(f"### {finalists[0]} vs {finalists[1]}")
+            user_in_champ = ss.your_team in finalists
+            if user_in_champ:
+                opp = finalists[1] if finalists[0] == ss.your_team else finalists[0]
+                st.info(f"🏆 You're in the Championship! {ss.your_team} vs {opp}")
+
+            if user_in_champ:
+                with st.expander("📋 Your lineup for the Championship"):
+                    starters = {s: p for s, p in ss.my_lineup.items() if p}
+                    rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
+                             "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
+                            for s, p in starters.items()]
+                    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+            else:
+                rounds_lost = "Wild Card" if ss.your_team not in [r[4] for r in ss.playoff_wc] else "Semifinals"
+                st.info(f"📺 Your season ended in the {rounds_lost}. Watching from the couch.")
+
+            if st.button("🏈 Simulate Championship", type="primary"):
+                t1, t2 = finalists
                 if t1 == ss.your_team:
-                    s1, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
+                    s1, my_scores = score_lineup(ss.my_lineup)
                     opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
-                    s2, opp_scores = score_lineup(opp_lineup, nfl_week=wk)
-                    ss.week_player_scores = player_scores
+                    s2, opp_scores = score_lineup(opp_lineup)
+                    ss.week_player_scores = my_scores
                     ss.opp_player_scores  = opp_scores
                     ss.opp_team_name      = t2
                 elif t2 == ss.your_team:
-                    s2, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
                     opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
-                    s1, opp_scores = score_lineup(opp_lineup, nfl_week=wk)
-                    ss.week_player_scores = player_scores
+                    s1, opp_scores = score_lineup(opp_lineup)
+                    s2, my_scores = score_lineup(ss.my_lineup)
+                    ss.week_player_scores = my_scores
                     ss.opp_player_scores  = opp_scores
                     ss.opp_team_name      = t1
                 else:
                     s1 = sim_team_score(ss.team_strengths[t1])
                     s2 = sim_team_score(ss.team_strengths[t2])
-                results.append((t1, t2, s1, s2))
-            ss.weekly_results.append({"week": wk, "matchups": results})
-            ss.week_results = results
-            ss.phase = "week_results"
-            st.rerun()
-    with c2:
-        if st.button("⏩ Sim Rest of Season"):
-            for w in range(wk, WEEKS_REG + 1):
-                week_matchups = ss.schedule[w - 1]
-                results = []
-                for t1, t2 in week_matchups:
-                    if t1 == ss.your_team:
-                        s1, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
-                        opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
-                        s2, opp_scores = score_lineup(opp_lineup, nfl_week=w)
-                        if w == WEEKS_REG:
-                            ss.week_player_scores = player_scores
-                            ss.opp_player_scores  = opp_scores
-                            ss.opp_team_name      = t2
-                    elif t2 == ss.your_team:
-                        s2, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
-                        opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
-                        s1, opp_scores = score_lineup(opp_lineup, nfl_week=w)
-                        if w == WEEKS_REG:
-                            ss.week_player_scores = player_scores
-                            ss.opp_player_scores  = opp_scores
-                            ss.opp_team_name      = t1
-                    else:
-                        s1 = sim_team_score(ss.team_strengths[t1])
-                        s2 = sim_team_score(ss.team_strengths[t2])
-                    results.append((t1, t2, s1, s2))
-                ss.weekly_results.append({"week": w, "matchups": results})
-                if w == WEEKS_REG:
-                    ss.week_results = results
-            ss.current_week = WEEKS_REG
-            ss.phase = "week_results"
-            st.rerun()
+                w = t1 if s1 >= s2 else t2
+                ss.playoff_champ = (t1, t2, s1, s2, w)
+                ss.phase = "playoff_champ_results"
+                st.rerun()
 
 
-# ══════════════════════════════════════════════════════════════
-# PHASE: WEEK RESULTS
-# ══════════════════════════════════════════════════════════════
-elif ss.phase == "week_results":
-    render_my_team_panel()
+    # ══════════════════════════════════════════════════════════════
+    # PHASE: CHAMPIONSHIP RESULTS
+    # ══════════════════════════════════════════════════════════════
+        if ss.phase == "playoff_champ_results":
+            t1, t2, s1, s2, champ = ss.playoff_champ
+            all_teams = list(ss.rosters.keys())
 
-    wk        = ss.current_week
-    results   = ss.week_results
-    all_teams = list(ss.rosters.keys())
+            st.title("🏆 Championship Result")
+            st.markdown(f"## {t1}  {s1}  –  {s2}  {t2}")
+            st.markdown(f"# 🎉 {champ} wins the Championship!")
 
-    st.title(f"📋 Week {wk} Results")
+            if champ == ss.your_team:
+                st.balloons()
+                st.success("🥳 That's YOU! Congratulations, Champion!")
+            elif ss.your_team in (t1, t2):
+                st.error("Runner-up — so close!")
 
-    # League scores
-    for t1, t2, s1, s2 in results:
-        winner   = t1 if s1 > s2 else (t2 if s2 > s1 else "Tie")
-        is_yours = ss.your_team in (t1, t2)
-        prefix   = "🏈 " if is_yours else ""
-        st.write(f"{prefix}**{t1}** {s1} – {s2} **{t2}**  →  Winner: **{winner}**")
+            if ss.week_player_scores and ss.your_team in (t1, t2):
+                render_playoff_scorecard()
 
-    # User result banner
-    your_result = next((r for r in results if ss.your_team in (r[0], r[1])), None)
-    if your_result:
-        t1, t2, s1, s2 = your_result
-        ys = s1 if t1 == ss.your_team else s2
-        os = s2 if t1 == ss.your_team else s1
-        on = t2 if t1 == ss.your_team else t1
-        st.divider()
-        if ys > os:
-            st.success(f"✅ You won!  {ss.your_team} **{ys}** – **{os}** {on}")
-        elif ys < os:
-            st.error(f"❌ You lost.  {ss.your_team} **{ys}** – **{os}** {on}")
-        else:
-            st.warning(f"🤝 Tie.  {ys} – {os}")
+            st.divider()
+            st.subheader("📊 Final Regular Season Standings")
+            st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
 
-    # ── Side-by-side matchup scorecard ───────────────────────────────────────
-    if ss.week_player_scores:
-        opp_name = ss.opp_team_name or "Opponent"
-
-        def build_score_rows(score_dict):
-            rows = []
-            for slot, val in score_dict.items():
-                player = val[0] if val else None
-                score  = val[1] if len(val) > 1 else 0.0
-                on_bye = val[2] if len(val) > 2 else False
-                if player:
-                    rows.append({
-                        "Slot":   slot,
-                        "Player": player,
-                        "Team":   get_player_team(player),
-                        "Pos":    get_player_pos(player),
-                        "Score":  score,
-                        "Proj":   f"{get_player_proj(player)/17:.1f}",
-                    })
-            return pd.DataFrame(rows)
-
-        with st.expander("📊 Matchup Scorecard", expanded=True):
-            mc1, mc2 = st.columns(2)
-
-            with mc1:
-                my_df = build_score_rows(ss.week_player_scores)
-                my_total = round(my_df["Score"].sum(), 2) if not my_df.empty else 0.0
-                st.markdown(f"### 🏈 {ss.your_team}")
-                st.metric("Total Score", my_total)
-                st.dataframe(my_df, use_container_width=True, hide_index=True)
-
-            with mc2:
-                opp_df = build_score_rows(ss.opp_player_scores) if ss.opp_player_scores else pd.DataFrame()
-                opp_total = round(opp_df["Score"].sum(), 2) if not opp_df.empty else 0.0
-                st.markdown(f"### 🆚 {opp_name}")
-                st.metric("Total Score", opp_total)
-                if not opp_df.empty:
-                    st.dataframe(opp_df, use_container_width=True, hide_index=True)
-                else:
-                    st.info("No opponent lineup data available.")
-
-    with st.expander("📊 Standings after Week {wk}"):
-        st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
-
-    st.divider()
-    if wk < WEEKS_REG:
-        if st.button(f"➡️ Go to Week {wk + 1}", type="primary"):
-            ss.current_week += 1
-            ss.phase = "week_preview"
-            st.rerun()
-    else:
-        st.success("🎉 Regular season complete! Time for the playoffs.")
-        if st.button("🏆 Begin Playoffs", type="primary"):
-            final         = get_standings(ss.weekly_results, all_teams)
-            ss.playoff_seeds = final.head(6)["Team"].tolist()
-            ss.phase      = "playoff_wildcard_preview"
-            st.rerun()
-
-
-# ══════════════════════════════════════════════════════════════
-# PHASE: PLAYOFF WILD CARD PREVIEW
-# ══════════════════════════════════════════════════════════════
-elif ss.phase == "playoff_wildcard_preview":
-    render_my_team_panel()
-    seeds = ss.playoff_seeds
-    st.title("🏆 Playoffs — Week 15: Wild Card")
-    st.markdown("**Seeds 1 & 2 have byes.**")
-    st.write(f"• (3) **{seeds[2]}** vs (6) **{seeds[5]}**")
-    st.write(f"• (4) **{seeds[3]}** vs (5) **{seeds[4]}**")
-
-    if ss.your_team in seeds[:2]:
-        st.info(f"✅ You ({ss.your_team}) have a bye this week!")
-    elif ss.your_team in seeds[2:]:
-        idx = seeds.index(ss.your_team)
-        opp_idx = {2:5, 3:4, 4:3, 5:2}.get(idx, None)
-        if opp_idx is not None:
-            st.info(f"**Your matchup:** {ss.your_team} vs {seeds[opp_idx]}")
-    else:
-        st.warning(f"{ss.your_team} did not make the playoffs.")
-
-    # Lineup summary
-    with st.expander("📋 Your lineup for Wild Card"):
-        starters = {s: p for s, p in ss.my_lineup.items() if p}
-        rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
-                 "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
-                for s, p in starters.items()]
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-
-    if st.button("🏈 Simulate Wild Card", type="primary"):
-        pr = ss.playoff_wc = []
-        for t1, t2 in [(seeds[2], seeds[5]), (seeds[3], seeds[4])]:
-            if t1 == ss.your_team:
-                s1, my_scores = score_lineup(ss.my_lineup)
-                opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
-                s2, opp_scores = score_lineup(opp_lineup)
-                ss.week_player_scores = my_scores
-                ss.opp_player_scores  = opp_scores
-                ss.opp_team_name      = t2
-            elif t2 == ss.your_team:
-                opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
-                s1, opp_scores = score_lineup(opp_lineup)
-                s2, my_scores = score_lineup(ss.my_lineup)
-                ss.week_player_scores = my_scores
-                ss.opp_player_scores  = opp_scores
-                ss.opp_team_name      = t1
-            else:
-                s1 = sim_team_score(ss.team_strengths[t1])
-                s2 = sim_team_score(ss.team_strengths[t2])
-            w = t1 if s1 >= s2 else t2
-            pr.append((t1, t2, s1, s2, w))
-        ss.phase = "playoff_wildcard_results"
-        st.rerun()
-
-
-# ══════════════════════════════════════════════════════════════
-# PHASE: PLAYOFF WILD CARD RESULTS
-# ══════════════════════════════════════════════════════════════
-elif ss.phase == "playoff_wildcard_results":
-    render_my_team_panel()
-    st.title("📋 Wild Card Results")
-    for t1, t2, s1, s2, w in ss.playoff_wc:
-        is_yours = ss.your_team in (t1, t2)
-        st.write(f"{'🏈 ' if is_yours else ''}**{t1}** {s1} – {s2} **{t2}**  →  **{w} advances**")
-
-    your_wc = next((r for r in ss.playoff_wc if ss.your_team in (r[0], r[1])), None)
-    if your_wc:
-        st.divider()
-        if your_wc[4] == ss.your_team:
-            st.success("✅ You advance to the Semifinals!")
-        else:
-            st.error("❌ Your season is over. Better luck next year.")
-
-    if ss.week_player_scores:
-        render_playoff_scorecard()
-
-    if st.button("➡️ Advance to Semifinals", type="primary"):
-        ss.phase = "playoff_semis_preview"
-        st.rerun()
-
-
-# ══════════════════════════════════════════════════════════════
-# PHASE: PLAYOFF SEMIS PREVIEW
-# ══════════════════════════════════════════════════════════════
-elif ss.phase == "playoff_semis_preview":
-    render_my_team_panel()
-    seeds   = ss.playoff_seeds
-    wc_wins = [r[4] for r in ss.playoff_wc]
-    semi_matchups = [(seeds[0], wc_wins[1]), (seeds[1], wc_wins[0])]
-
-    st.title("🏆 Playoffs — Week 16: Semifinals")
-    user_in_semis = ss.your_team in [t for pair in semi_matchups for t in pair]
-    for t1, t2 in semi_matchups:
-        tag = "  👈 your game" if user_in_semis and ss.your_team in (t1, t2) else ""
-        st.write(f"• **{t1}** vs **{t2}**{tag}")
-    if user_in_semis:
-        with st.expander("📋 Your lineup for Semis"):
-            starters = {s: p for s, p in ss.my_lineup.items() if p}
-            rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
-                     "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
-                    for s, p in starters.items()]
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-    else:
-        st.info("📺 Your season ended in the Wild Card. Watching from the couch.")
-
-    if st.button("🏈 Simulate Semifinals", type="primary"):
-        results = []
-        for t1, t2 in semi_matchups:
-            if t1 == ss.your_team:
-                s1, my_scores = score_lineup(ss.my_lineup)
-                opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
-                s2, opp_scores = score_lineup(opp_lineup)
-                ss.week_player_scores = my_scores
-                ss.opp_player_scores  = opp_scores
-                ss.opp_team_name      = t2
-            elif t2 == ss.your_team:
-                opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
-                s1, opp_scores = score_lineup(opp_lineup)
-                s2, my_scores = score_lineup(ss.my_lineup)
-                ss.week_player_scores = my_scores
-                ss.opp_player_scores  = opp_scores
-                ss.opp_team_name      = t1
-            else:
-                s1 = sim_team_score(ss.team_strengths[t1])
-                s2 = sim_team_score(ss.team_strengths[t2])
-            w = t1 if s1 >= s2 else t2
-            results.append((t1, t2, s1, s2, w))
-        ss.playoff_semis = results
-        ss.phase = "playoff_semis_results"
-        st.rerun()
-
-
-# ══════════════════════════════════════════════════════════════
-# PHASE: PLAYOFF SEMIS RESULTS
-# ══════════════════════════════════════════════════════════════
-elif ss.phase == "playoff_semis_results":
-    render_my_team_panel()
-    st.title("📋 Semifinals Results")
-    for t1, t2, s1, s2, w in ss.playoff_semis:
-        is_yours = ss.your_team in (t1, t2)
-        st.write(f"{'🏈 ' if is_yours else ''}**{t1}** {s1} – {s2} **{t2}**  →  **{w} advances**")
-
-    your_semi = next((r for r in ss.playoff_semis if ss.your_team in (r[0], r[1])), None)
-    if your_semi:
-        st.divider()
-        if your_semi[4] == ss.your_team:
-            st.success("✅ You're in the Championship! 🏆")
-        else:
-            st.error("❌ You lost in the Semis. So close!")
-
-    if ss.week_player_scores and your_semi:
-        render_playoff_scorecard()
-
-    if st.button("➡️ Advance to Championship", type="primary"):
-        ss.phase = "playoff_champ_preview"
-        st.rerun()
-
-
-# ══════════════════════════════════════════════════════════════
-# PHASE: CHAMPIONSHIP PREVIEW
-# ══════════════════════════════════════════════════════════════
-elif ss.phase == "playoff_champ_preview":
-    render_my_team_panel()
-    finalists = [r[4] for r in ss.playoff_semis]
-    st.title("🏆 Playoffs — Week 17: Championship")
-    st.markdown(f"### {finalists[0]} vs {finalists[1]}")
-    user_in_champ = ss.your_team in finalists
-    if user_in_champ:
-        opp = finalists[1] if finalists[0] == ss.your_team else finalists[0]
-        st.info(f"🏆 You're in the Championship! {ss.your_team} vs {opp}")
-
-    if user_in_champ:
-        with st.expander("📋 Your lineup for the Championship"):
-            starters = {s: p for s, p in ss.my_lineup.items() if p}
-            rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
-                     "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
-                    for s, p in starters.items()]
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-    else:
-        rounds_lost = "Wild Card" if ss.your_team not in [r[4] for r in ss.playoff_wc] else "Semifinals"
-        st.info(f"📺 Your season ended in the {rounds_lost}. Watching from the couch.")
-
-    if st.button("🏈 Simulate Championship", type="primary"):
-        t1, t2 = finalists
-        if t1 == ss.your_team:
-            s1, my_scores = score_lineup(ss.my_lineup)
-            opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
-            s2, opp_scores = score_lineup(opp_lineup)
-            ss.week_player_scores = my_scores
-            ss.opp_player_scores  = opp_scores
-            ss.opp_team_name      = t2
-        elif t2 == ss.your_team:
-            opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
-            s1, opp_scores = score_lineup(opp_lineup)
-            s2, my_scores = score_lineup(ss.my_lineup)
-            ss.week_player_scores = my_scores
-            ss.opp_player_scores  = opp_scores
-            ss.opp_team_name      = t1
-        else:
-            s1 = sim_team_score(ss.team_strengths[t1])
-            s2 = sim_team_score(ss.team_strengths[t2])
-        w = t1 if s1 >= s2 else t2
-        ss.playoff_champ = (t1, t2, s1, s2, w)
-        ss.phase = "playoff_champ_results"
-        st.rerun()
-
-
-# ══════════════════════════════════════════════════════════════
-# PHASE: CHAMPIONSHIP RESULTS
-# ══════════════════════════════════════════════════════════════
-elif ss.phase == "playoff_champ_results":
-    render_my_team_panel()
-    t1, t2, s1, s2, champ = ss.playoff_champ
-    all_teams = list(ss.rosters.keys())
-
-    st.title("🏆 Championship Result")
-    st.markdown(f"## {t1}  {s1}  –  {s2}  {t2}")
-    st.markdown(f"# 🎉 {champ} wins the Championship!")
-
-    if champ == ss.your_team:
-        st.balloons()
-        st.success("🥳 That's YOU! Congratulations, Champion!")
-    elif ss.your_team in (t1, t2):
-        st.error("Runner-up — so close!")
-
-    if ss.week_player_scores and ss.your_team in (t1, t2):
-        render_playoff_scorecard()
-
-    st.divider()
-    st.subheader("📊 Final Regular Season Standings")
-    st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
-
-    if st.button("🔄 Start New Season"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
+            if st.button("🔄 Start New Season"):
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                st.rerun()
