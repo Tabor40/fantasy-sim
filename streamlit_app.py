@@ -430,10 +430,71 @@ if ss.phase == "setup":
 # PHASE: DRAFT
 # ══════════════════════════════════════════════════════════════
 elif ss.phase == "draft":
-    st.title("🗒️ Snake Draft — 15 Rounds")
+
+    # ── CSS for the draft board ──────────────────────────────
+    st.markdown("""
+    <style>
+    /* Hide default page padding a bit */
+    .block-container { padding-top: 1rem; }
+
+    /* On-the-clock banner */
+    .otc-banner {
+        background: linear-gradient(90deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+        border-left: 5px solid #e94560;
+        border-radius: 6px;
+        padding: 10px 18px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .otc-pick { color: #aaa; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; }
+    .otc-name { color: #fff; font-size: 1.25rem; font-weight: 700; }
+    .otc-you  { color: #e94560; font-size: 0.85rem; font-weight: 600; background: rgba(233,69,96,0.15);
+                padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(233,69,96,0.4); }
+    .otc-round { color: #e94560; font-size: 0.85rem; font-weight: 600; margin-left: auto; }
+
+    /* Progress bar */
+    .draft-progress-bg {
+        background: #1a1a2e; border-radius: 4px; height: 6px; margin-bottom: 14px;
+    }
+    .draft-progress-fill {
+        background: linear-gradient(90deg, #e94560, #ff6b6b);
+        height: 6px; border-radius: 4px; transition: width 0.3s;
+    }
+
+    /* Position pill badges */
+    .pos-qb  { background:#c0392b; color:#fff; padding:2px 7px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+    .pos-rb  { background:#27ae60; color:#fff; padding:2px 7px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+    .pos-wr  { background:#2980b9; color:#fff; padding:2px 7px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+    .pos-te  { background:#e67e22; color:#fff; padding:2px 7px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+    .pos-k   { background:#8e44ad; color:#fff; padding:2px 7px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+    .pos-def { background:#2c3e50; color:#fff; padding:2px 7px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+
+    /* Player rows */
+    .player-row {
+        display: flex; align-items: center; padding: 6px 10px;
+        border-bottom: 1px solid #f0f0f0; gap: 10px;
+    }
+    .player-row:hover { background: #f8f9ff; }
+    .player-rank { color: #aaa; font-size: 0.78rem; width: 24px; text-align:right; flex-shrink:0; }
+    .player-name { font-weight: 600; font-size: 0.92rem; flex: 1; }
+    .player-proj { color: #555; font-size: 0.82rem; margin-left: auto; }
+
+    /* Roster slot rows */
+    .roster-row {
+        display: flex; align-items: center; padding: 5px 8px;
+        border-bottom: 1px solid #f0f0f0; gap: 8px; font-size: 0.85rem;
+    }
+    .roster-slot { color: #888; font-size: 0.72rem; width: 36px; flex-shrink:0; }
+    .roster-name { flex:1; font-weight:500; }
+    .roster-empty { flex:1; color:#ccc; font-style:italic; }
+    </style>
+    """, unsafe_allow_html=True)
 
     draft_order = get_draft_order()
 
+    # ── Finish draft ─────────────────────────────────────────
     if ss.current_pick >= TOTAL_PICKS:
         all_teams = list(ss.rosters.keys())
         proj_sums = {
@@ -451,11 +512,8 @@ elif ss.phase == "draft":
     curr_num  = draft_order[ss.current_pick]
     is_yours  = curr_num == ss.your_pick_pos
     curr_name = ss.your_team if is_yours else f"Team {curr_num}"
-
-    st.write(f"**Pick {ss.current_pick + 1} / {TOTAL_PICKS}** | Round {ss.current_pick // NUM_TEAMS + 1}")
-    st.write(f"**On the clock:** {curr_name} {'👈 (You)' if is_yours else '(CPU)'}")
-
-    st.dataframe(ss.drafted[["player","pos","proj"]].head(20), use_container_width=True, hide_index=True)
+    rnd       = ss.current_pick // NUM_TEAMS + 1
+    pct       = ss.current_pick / TOTAL_PICKS * 100
 
     def cpu_pick(team_name):
         best = ss.drafted.iloc[0]
@@ -463,45 +521,210 @@ elif ss.phase == "draft":
         ss.drafted = ss.drafted.iloc[1:]
         ss.current_pick += 1
 
-    if is_yours:
-        sel = st.selectbox("Your pick:", ss.drafted["player"].tolist(), index=None, placeholder="Choose a player...")
-        c1, c2 = st.columns(2)
-        with c1:
-            if st.button("✅ Confirm Pick") and sel:
-                ss.rosters[ss.your_team].append(sel)
-                ss.drafted = ss.drafted[ss.drafted["player"] != sel]
-                ss.current_pick += 1
-                st.rerun()
-        with c2:
-            if st.button("⚡ Auto-Pick Best"):
+    def pos_badge(pos):
+        cls = f"pos-{pos.lower()}"
+        return f'<span class="{cls}">{pos}</span>'
+
+    # ── On-the-clock banner ───────────────────────────────────
+    you_tag = '<span class="otc-you">⭐ YOUR PICK</span>' if is_yours else ''
+    st.markdown(f"""
+    <div class="otc-banner">
+        <div>
+            <div class="otc-pick">Pick {ss.current_pick + 1} of {TOTAL_PICKS}</div>
+            <div class="otc-name">🏈 {curr_name} {you_tag}</div>
+        </div>
+        <div class="otc-round">Round {rnd} of {NUM_ROUNDS}</div>
+    </div>
+    <div class="draft-progress-bg">
+        <div class="draft-progress-fill" style="width:{pct:.1f}%"></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Two-column layout: players left, roster right ─────────
+    left_col, right_col = st.columns([3, 2])
+
+    with left_col:
+        # Position filter tabs
+        pos_tabs = st.tabs(["All", "QB", "RB", "WR", "TE", "K", "DEF"])
+        pos_filters = ["All", "QB", "RB", "WR", "TE", "K", "DEF"]
+
+        for tab, pos_filter in zip(pos_tabs, pos_filters):
+            with tab:
+                if pos_filter == "All":
+                    view_df = ss.drafted.head(40)
+                else:
+                    view_df = ss.drafted[ss.drafted["pos"] == pos_filter].head(30)
+
+                if view_df.empty:
+                    st.write("No players available.")
+                    continue
+
+                # Build HTML table
+                rows_html = ""
+                for i, (_, row) in enumerate(view_df.iterrows(), 1):
+                    badge = pos_badge(row["pos"])
+                    rows_html += f"""
+                    <div class="player-row">
+                        <span class="player-rank">{i}</span>
+                        {badge}
+                        <span class="player-name">{row['player']}</span>
+                        <span class="player-proj">{row['proj']} pts</span>
+                    </div>"""
+                st.markdown(rows_html, unsafe_allow_html=True)
+
+                if is_yours:
+                    st.markdown("---")
+                    player_options = view_df["player"].tolist()
+                    sel_key = f"pick_select_{pos_filter}"
+                    sel = st.selectbox(
+                        "Click to select, then draft:",
+                        player_options,
+                        index=None,
+                        placeholder="Select a player...",
+                        key=sel_key,
+                        label_visibility="collapsed"
+                    )
+                    if sel:
+                        pos_of_sel = get_player_pos(sel)
+                        proj_of_sel = get_player_proj(sel)
+                        st.markdown(
+                            f"**Selected:** {sel} &nbsp; {pos_badge(pos_of_sel)} &nbsp; "
+                            f"<span style='color:#555;font-size:0.9rem'>{proj_of_sel} proj pts</span>",
+                            unsafe_allow_html=True
+                        )
+                        if st.button(f"✅ Draft {sel}", type="primary", key=f"draft_btn_{pos_filter}"):
+                            ss.rosters[ss.your_team].append(sel)
+                            ss.drafted = ss.drafted[ss.drafted["player"] != sel]
+                            ss.current_pick += 1
+                            st.rerun()
+
+        # CPU controls (shown outside tabs so always visible when not your pick)
+        if not is_yours:
+            st.markdown("---")
+            ca, cb, cc = st.columns(3)
+            with ca:
+                if st.button("▶️ CPU Picks Once", use_container_width=True):
+                    cpu_pick(curr_name)
+                    st.rerun()
+            with cb:
+                if st.button("⏩ Skip to My Pick", use_container_width=True):
+                    while ss.current_pick < TOTAL_PICKS:
+                        cn = draft_order[ss.current_pick]
+                        if cn == ss.your_pick_pos:
+                            break
+                        nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
+                        cpu_pick(nm)
+                    st.rerun()
+            with cc:
+                if st.button("⏭️ Auto-Complete", use_container_width=True):
+                    while ss.current_pick < TOTAL_PICKS:
+                        cn = draft_order[ss.current_pick]
+                        nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
+                        cpu_pick(nm)
+                    st.rerun()
+        else:
+            st.markdown("---")
+            if st.button("⚡ Auto-Pick Best Available", use_container_width=True):
                 cpu_pick(ss.your_team)
                 st.rerun()
-    else:
-        c1, c2 = st.columns(2)
-        with c1:
-            if st.button("▶️ CPU Picks Once"):
-                cpu_pick(curr_name)
-                st.rerun()
-        with c2:
-            if st.button("⏩ Skip to My Next Pick"):
-                while ss.current_pick < TOTAL_PICKS:
-                    cn = draft_order[ss.current_pick]
-                    if cn == ss.your_pick_pos:
-                        break
-                    nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
-                    cpu_pick(nm)
-                st.rerun()
 
-    if st.button("⏭️ Auto-Complete Entire Draft"):
-        while ss.current_pick < TOTAL_PICKS:
-            cn = draft_order[ss.current_pick]
-            nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
-            cpu_pick(nm)
-        st.rerun()
+    with right_col:
+        st.markdown("#### 📋 Your Roster")
 
-    if ss.rosters.get(ss.your_team):
-        with st.expander("Your roster so far"):
-            st.dataframe(pd.DataFrame({"Player": ss.rosters[ss.your_team]}), hide_index=True)
+        my_roster = ss.rosters.get(ss.your_team, [])
+
+        # Define display slots for roster panel
+        display_slots = [
+            ("QB", ["QB"]), ("RB", ["RB"]), ("RB", ["RB"]),
+            ("WR", ["WR"]), ("WR", ["WR"]), ("TE", ["TE"]),
+            ("FLEX", ["RB","WR","TE"]), ("K", ["K"]), ("DEF", ["DEF"]),
+            ("BN", None), ("BN", None), ("BN", None),
+            ("BN", None), ("BN", None), ("BN", None),
+        ]
+
+        # Assign players to slots greedily
+        used = set()
+        slot_assignments = []
+        for slot_label, eligible in display_slots:
+            if eligible is None:
+                # bench — any remaining player
+                remaining = [p for p in my_roster if p not in used]
+                if remaining:
+                    slot_assignments.append((slot_label, remaining[0]))
+                    used.add(remaining[0])
+                else:
+                    slot_assignments.append((slot_label, None))
+            else:
+                candidates = [p for p in my_roster
+                              if p not in used and get_player_pos(p) in eligible]
+                if candidates:
+                    # pick highest proj
+                    best = max(candidates, key=get_player_proj)
+                    slot_assignments.append((slot_label, best))
+                    used.add(best)
+                else:
+                    slot_assignments.append((slot_label, None))
+
+        rows_html = ""
+        for slot_label, player in slot_assignments:
+            slot_color = {"QB":"#c0392b","RB":"#27ae60","WR":"#2980b9",
+                          "TE":"#e67e22","FLEX":"#7f8c8d","K":"#8e44ad",
+                          "DEF":"#2c3e50","BN":"#bbb"}.get(slot_label, "#aaa")
+            slot_span = f'<span class="roster-slot" style="color:{slot_color};font-weight:700">{slot_label}</span>'
+            if player:
+                pos  = get_player_pos(player)
+                badge = pos_badge(pos)
+                rows_html += f"""
+                <div class="roster-row">
+                    {slot_span}
+                    {badge}
+                    <span class="roster-name">{player}</span>
+                </div>"""
+            else:
+                rows_html += f"""
+                <div class="roster-row">
+                    {slot_span}
+                    <span class="roster-empty">— empty —</span>
+                </div>"""
+
+        st.markdown(rows_html, unsafe_allow_html=True)
+
+        # Recent picks log
+        if ss.current_pick > 0:
+            st.markdown("#### 🕐 Recent Picks")
+            recent_picks = []
+            pick_num = ss.current_pick
+            all_teams_in_order = []
+            for i in range(ss.current_pick):
+                cn = draft_order[i]
+                nm = ss.your_team if cn == ss.your_pick_pos else f"Team {cn}"
+                all_teams_in_order.append(nm)
+
+            # Collect recent pick history from rosters
+            pick_log = []
+            team_pick_idx = {t: 0 for t in ss.rosters}
+            for i in range(ss.current_pick):
+                team_at_pick = all_teams_in_order[i]
+                idx = team_pick_idx[team_at_pick]
+                if idx < len(ss.rosters[team_at_pick]):
+                    player_at_pick = ss.rosters[team_at_pick][idx]
+                    pick_log.append((i + 1, team_at_pick, player_at_pick))
+                    team_pick_idx[team_at_pick] += 1
+
+            log_html = ""
+            for pnum, team, player in reversed(pick_log[-8:]):
+                is_you = team == ss.your_team
+                style = "font-weight:700;color:#e94560;" if is_you else "color:#555;"
+                pos = get_player_pos(player)
+                badge = pos_badge(pos)
+                log_html += f"""
+                <div class="roster-row">
+                    <span style="color:#aaa;font-size:0.75rem;width:28px">{pnum}</span>
+                    {badge}
+                    <span style="{style}font-size:0.83rem;flex:1">{player}</span>
+                    <span style="color:#aaa;font-size:0.75rem">{team}</span>
+                </div>"""
+            st.markdown(log_html, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════
