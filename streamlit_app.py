@@ -1191,16 +1191,19 @@ elif ss.phase == "playoff_semis_preview":
     semi_matchups = [(seeds[0], wc_wins[1]), (seeds[1], wc_wins[0])]
 
     st.title("🏆 Playoffs — Week 16: Semifinals")
+    user_in_semis = ss.your_team in [t for pair in semi_matchups for t in pair]
     for t1, t2 in semi_matchups:
-        tag = "  👈 your game" if ss.your_team in (t1, t2) else ""
+        tag = "  👈 your game" if user_in_semis and ss.your_team in (t1, t2) else ""
         st.write(f"• **{t1}** vs **{t2}**{tag}")
-
-    with st.expander("📋 Your lineup for Semis"):
-        starters = {s: p for s, p in ss.my_lineup.items() if p}
-        rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
-                 "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
-                for s, p in starters.items()]
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    if user_in_semis:
+        with st.expander("📋 Your lineup for Semis"):
+            starters = {s: p for s, p in ss.my_lineup.items() if p}
+            rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
+                     "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
+                    for s, p in starters.items()]
+            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    else:
+        st.info("📺 Your season ended in the Wild Card. Watching from the couch.")
 
     if st.button("🏈 Simulate Semifinals", type="primary"):
         results = []
@@ -1247,7 +1250,7 @@ elif ss.phase == "playoff_semis_results":
         else:
             st.error("❌ You lost in the Semis. So close!")
 
-    if ss.week_player_scores:
+    if ss.week_player_scores and your_semi:
         render_playoff_scorecard()
 
     if st.button("➡️ Advance to Championship", type="primary"):
@@ -1263,16 +1266,21 @@ elif ss.phase == "playoff_champ_preview":
     finalists = [r[4] for r in ss.playoff_semis]
     st.title("🏆 Playoffs — Week 17: Championship")
     st.markdown(f"### {finalists[0]} vs {finalists[1]}")
-    if ss.your_team in finalists:
+    user_in_champ = ss.your_team in finalists
+    if user_in_champ:
         opp = finalists[1] if finalists[0] == ss.your_team else finalists[0]
         st.info(f"🏆 You're in the Championship! {ss.your_team} vs {opp}")
 
-    with st.expander("📋 Your lineup for the Championship"):
-        starters = {s: p for s, p in ss.my_lineup.items() if p}
-        rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
-                 "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
-                for s, p in starters.items()]
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    if user_in_champ:
+        with st.expander("📋 Your lineup for the Championship"):
+            starters = {s: p for s, p in ss.my_lineup.items() if p}
+            rows = [{"Slot": s, "Player": p, "Pos": get_player_pos(p),
+                     "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
+                    for s, p in starters.items()]
+            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    else:
+        rounds_lost = "Wild Card" if ss.your_team not in [r[4] for r in ss.playoff_wc] else "Semifinals"
+        st.info(f"📺 Your season ended in the {rounds_lost}. Watching from the couch.")
 
     if st.button("🏈 Simulate Championship", type="primary"):
         t1, t2 = finalists
