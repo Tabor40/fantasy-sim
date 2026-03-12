@@ -7,191 +7,191 @@ st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 # ── Player Pool (180 players — 15 rounds × 12 teams) ─────────────────────────
 player_data = [
     # ── QBs ──────────────────────────────────────────────────────────────────
-    {"player": "Josh Allen",               "pos": "QB",  "proj": 420, "team": "BUF", "adp": 5.2},
-    {"player": "Lamar Jackson",            "pos": "QB",  "proj": 410, "team": "BAL", "adp": 6.1},
-    {"player": "Jalen Hurts",              "pos": "QB",  "proj": 400, "team": "PHI", "adp": 14.3},
-    {"player": "Kyler Murray",             "pos": "QB",  "proj": 390, "team": "ARI", "adp": 38.4},
-    {"player": "C.J. Stroud",              "pos": "QB",  "proj": 380, "team": "HOU", "adp": 42.1},
-    {"player": "Joe Burrow",               "pos": "QB",  "proj": 375, "team": "CIN", "adp": 44.8},
-    {"player": "Patrick Mahomes",          "pos": "QB",  "proj": 370, "team": "KC", "adp": 47.2},
-    {"player": "Jayden Daniels",           "pos": "QB",  "proj": 365, "team": "WAS", "adp": 52.6},
-    {"player": "Baker Mayfield",           "pos": "QB",  "proj": 350, "team": "TB", "adp": 88.3},
-    {"player": "Tua Tagovailoa",           "pos": "QB",  "proj": 345, "team": "MIA", "adp": 92.7},
-    {"player": "Sam Darnold",              "pos": "QB",  "proj": 338, "team": "MIN", "adp": 98.1},
-    {"player": "Jordan Love",              "pos": "QB",  "proj": 332, "team": "GB", "adp": 101.4},
-    {"player": "Dak Prescott",             "pos": "QB",  "proj": 325, "team": "DAL", "adp": 105.2},
-    {"player": "Trevor Lawrence",          "pos": "QB",  "proj": 318, "team": "JAX", "adp": 112.8},
-    {"player": "Matthew Stafford",         "pos": "QB",  "proj": 310, "team": "LAR", "adp": 118.3},
-    {"player": "Geno Smith",               "pos": "QB",  "proj": 302, "team": "SEA", "adp": 124.6},
-    {"player": "Anthony Richardson",       "pos": "QB",  "proj": 295, "team": "IND", "adp": 131.2},
-    {"player": "Justin Fields",            "pos": "QB",  "proj": 285, "team": "PIT", "adp": 138.7},
-    {"player": "Derek Carr",               "pos": "QB",  "proj": 275, "team": "NO", "adp": 144.1},
-    {"player": "Kirk Cousins",             "pos": "QB",  "proj": 265, "team": "ATL", "adp": 149.3},
-    {"player": "Caleb Williams",           "pos": "QB",  "proj": 258, "team": "CHI", "adp": 54.8},
-    {"player": "Will Levis",               "pos": "QB",  "proj": 250, "team": "TEN", "adp": 158.2},
+    {"player": "Josh Allen",               "pos": "QB",  "proj": 420, "team": "BUF", "adp": 33.2},
+    {"player": "Lamar Jackson",            "pos": "QB",  "proj": 410, "team": "BAL", "adp": 43.1},
+    {"player": "Jalen Hurts",              "pos": "QB",  "proj": 400, "team": "PHI", "adp": 60.4},
+    {"player": "Kyler Murray",             "pos": "QB",  "proj": 390, "team": "ARI", "adp": 128.3},
+    {"player": "C.J. Stroud",              "pos": "QB",  "proj": 380, "team": "HOU", "adp": 143.2},
+    {"player": "Joe Burrow",               "pos": "QB",  "proj": 375, "team": "CIN", "adp": 65.2},
+    {"player": "Patrick Mahomes",          "pos": "QB",  "proj": 370, "team": "KC", "adp": 92.3},
+    {"player": "Jayden Daniels",           "pos": "QB",  "proj": 365, "team": "WAS", "adp": 55.8},
+    {"player": "Baker Mayfield",           "pos": "QB",  "proj": 350, "team": "TB", "adp": 112.4},
+    {"player": "Tua Tagovailoa",           "pos": "QB",  "proj": 345, "team": "MIA", "adp": 172.1},
+    {"player": "Sam Darnold",              "pos": "QB",  "proj": 338, "team": "MIN", "adp": 151.6},
+    {"player": "Jordan Love",              "pos": "QB",  "proj": 332, "team": "GB", "adp": 138.8},
+    {"player": "Dak Prescott",             "pos": "QB",  "proj": 325, "team": "DAL", "adp": 84.7},
+    {"player": "Trevor Lawrence",          "pos": "QB",  "proj": 318, "team": "JAX", "adp": 97.5},
+    {"player": "Matthew Stafford",         "pos": "QB",  "proj": 310, "team": "LAR", "adp": 101.3},
+    {"player": "Geno Smith",               "pos": "QB",  "proj": 302, "team": "SEA", "adp": 155.2},
+    {"player": "Anthony Richardson",       "pos": "QB",  "proj": 295, "team": "IND", "adp": 182.4},
+    {"player": "Justin Fields",            "pos": "QB",  "proj": 285, "team": "PIT", "adp": 178.9},
+    {"player": "Derek Carr",               "pos": "QB",  "proj": 275, "team": "NO", "adp": 192.1},
+    {"player": "Kirk Cousins",             "pos": "QB",  "proj": 265, "team": "ATL", "adp": 188.6},
+    {"player": "Caleb Williams",           "pos": "QB",  "proj": 258, "team": "CHI", "adp": 75.1},
+    {"player": "Will Levis",               "pos": "QB",  "proj": 250, "team": "TEN", "adp": 183.7},
     # ── RBs ──────────────────────────────────────────────────────────────────
-    {"player": "Bijan Robinson",           "pos": "RB",  "proj": 380, "team": "ATL", "adp": 4.1},
-    {"player": "Jahmyr Gibbs",             "pos": "RB",  "proj": 370, "team": "DET", "adp": 7.8},
-    {"player": "Christian McCaffrey",      "pos": "RB",  "proj": 370, "team": "SF", "adp": 1.2},
-    {"player": "Saquon Barkley",           "pos": "RB",  "proj": 360, "team": "PHI", "adp": 3.4},
-    {"player": "Jonathan Taylor",          "pos": "RB",  "proj": 340, "team": "IND", "adp": 9.6},
-    {"player": "De'Von Achane",            "pos": "RB",  "proj": 320, "team": "MIA", "adp": 11.3},
-    {"player": "Kyren Williams",           "pos": "RB",  "proj": 310, "team": "LAR", "adp": 16.7},
-    {"player": "James Cook",               "pos": "RB",  "proj": 255, "team": "BUF", "adp": 19.4},
-    {"player": "Kenneth Walker III",       "pos": "RB",  "proj": 250, "team": "SEA", "adp": 22.8},
-    {"player": "Derrick Henry",            "pos": "RB",  "proj": 245, "team": "BAL", "adp": 25.3},
-    {"player": "Josh Jacobs",              "pos": "RB",  "proj": 240, "team": "GB", "adp": 28.6},
-    {"player": "Breece Hall",              "pos": "RB",  "proj": 235, "team": "NYJ", "adp": 31.2},
-    {"player": "Rhamondre Stevenson",      "pos": "RB",  "proj": 228, "team": "NE", "adp": 48.4},
-    {"player": "Aaron Jones",              "pos": "RB",  "proj": 222, "team": "MIN", "adp": 55.1},
-    {"player": "Tony Pollard",             "pos": "RB",  "proj": 215, "team": "TEN", "adp": 62.3},
-    {"player": "Joe Mixon",                "pos": "RB",  "proj": 208, "team": "HOU", "adp": 68.7},
-    {"player": "Rachaad White",            "pos": "RB",  "proj": 200, "team": "TB", "adp": 74.2},
-    {"player": "D'Andre Swift",            "pos": "RB",  "proj": 193, "team": "CHI", "adp": 80.5},
-    {"player": "Isiah Pacheco",            "pos": "RB",  "proj": 186, "team": "KC", "adp": 86.1},
-    {"player": "Travis Etienne Jr.",       "pos": "RB",  "proj": 180, "team": "JAX", "adp": 93.4},
-    {"player": "Zack Moss",                "pos": "RB",  "proj": 173, "team": "CIN", "adp": 108.2},
-    {"player": "Javonte Williams",         "pos": "RB",  "proj": 166, "team": "DEN", "adp": 115.6},
-    {"player": "Chuba Hubbard",            "pos": "RB",  "proj": 160, "team": "CAR", "adp": 121.8},
-    {"player": "Najee Harris",             "pos": "RB",  "proj": 153, "team": "LAC", "adp": 127.3},
-    {"player": "Alvin Kamara",             "pos": "RB",  "proj": 147, "team": "NO", "adp": 133.9},
-    {"player": "Miles Sanders",            "pos": "RB",  "proj": 140, "team": "CAR", "adp": 139.4},
-    {"player": "Devin Singletary",         "pos": "RB",  "proj": 133, "team": "NYG", "adp": 145.7},
-    {"player": "Ezekiel Elliott",          "pos": "RB",  "proj": 126, "team": "DAL", "adp": 151.2},
-    {"player": "Kareem Hunt",              "pos": "RB",  "proj": 120, "team": "KC", "adp": 155.8},
-    {"player": "Dameon Pierce",            "pos": "RB",  "proj": 113, "team": "HOU", "adp": 160.3},
-    {"player": "David Montgomery",         "pos": "RB",  "proj": 107, "team": "DET", "adp": 164.7},
-    {"player": "Tyjae Spears",             "pos": "RB",  "proj": 100, "team": "TEN", "adp": 168.2},
-    {"player": "Rico Dowdle",              "pos": "RB",  "proj":  94, "team": "DAL", "adp": 171.6},
-    {"player": "Jaylen Warren",            "pos": "RB",  "proj":  88, "team": "PIT", "adp": 174.9},
-    {"player": "Ty Chandler",              "pos": "RB",  "proj":  82, "team": "MIN", "adp": 177.3},
-    {"player": "Jaleel McLaughlin",        "pos": "RB",  "proj":  76, "team": "DEN", "adp": 179.8},
-    {"player": "Roschon Johnson",          "pos": "RB",  "proj":  70, "team": "CHI", "adp": 182.4},
-    {"player": "Kimani Vidal",             "pos": "RB",  "proj":  64, "team": "LAC", "adp": 185.1},
-    {"player": "Patrick Taylor",           "pos": "RB",  "proj":  58, "team": "MIA", "adp": 187.6},
-    {"player": "Keaton Mitchell",          "pos": "RB",  "proj":  54, "team": "BAL", "adp": 189.2},
-    {"player": "Marlon Mack",              "pos": "RB",  "proj":  50, "team": "HOU", "adp": 191.7},
-    {"player": "Samaje Perine",            "pos": "RB",  "proj":  46, "team": "DEN", "adp": 193.4},
-    {"player": "Elijah Mitchell",          "pos": "RB",  "proj":  42, "team": "SF", "adp": 195.8},
-    {"player": "Jordan Mason",             "pos": "RB",  "proj":  38, "team": "SF", "adp": 12.1},
-    {"player": "Chris Rodriguez Jr.",      "pos": "RB",  "proj":  34, "team": "WAS", "adp": 172.1},
+    {"player": "Bijan Robinson",           "pos": "RB",  "proj": 380, "team": "ATL", "adp": 1.4},
+    {"player": "Jahmyr Gibbs",             "pos": "RB",  "proj": 370, "team": "DET", "adp": 2.6},
+    {"player": "Christian McCaffrey",      "pos": "RB",  "proj": 370, "team": "SF", "adp": 5.1},
+    {"player": "Saquon Barkley",           "pos": "RB",  "proj": 360, "team": "PHI", "adp": 22.3},
+    {"player": "Jonathan Taylor",          "pos": "RB",  "proj": 340, "team": "IND", "adp": 8.2},
+    {"player": "De'Von Achane",            "pos": "RB",  "proj": 320, "team": "MIA", "adp": 7.4},
+    {"player": "Kyren Williams",           "pos": "RB",  "proj": 310, "team": "LAR", "adp": 31.5},
+    {"player": "James Cook",               "pos": "RB",  "proj": 255, "team": "BUF", "adp": 9.3},
+    {"player": "Kenneth Walker III",       "pos": "RB",  "proj": 250, "team": "SEA", "adp": 50.1},
+    {"player": "Derrick Henry",            "pos": "RB",  "proj": 245, "team": "BAL", "adp": 27.4},
+    {"player": "Josh Jacobs",              "pos": "RB",  "proj": 240, "team": "GB", "adp": 20.1},
+    {"player": "Breece Hall",              "pos": "RB",  "proj": 235, "team": "NYJ", "adp": 38.2},
+    {"player": "Rhamondre Stevenson",      "pos": "RB",  "proj": 228, "team": "NE", "adp": 105.6},
+    {"player": "Aaron Jones",              "pos": "RB",  "proj": 222, "team": "MIN", "adp": 89.4},
+    {"player": "Tony Pollard",             "pos": "RB",  "proj": 215, "team": "TEN", "adp": 95.2},
+    {"player": "Joe Mixon",                "pos": "RB",  "proj": 208, "team": "HOU", "adp": 100.3},
+    {"player": "Rachaad White",            "pos": "RB",  "proj": 200, "team": "TB", "adp": 125.1},
+    {"player": "D'Andre Swift",            "pos": "RB",  "proj": 193, "team": "CHI", "adp": 52.4},
+    {"player": "Isiah Pacheco",            "pos": "RB",  "proj": 186, "team": "KC", "adp": 120.7},
+    {"player": "Travis Etienne Jr.",       "pos": "RB",  "proj": 180, "team": "JAX", "adp": 35.3},
+    {"player": "Zack Moss",                "pos": "RB",  "proj": 173, "team": "CIN", "adp": 160.4},
+    {"player": "Javonte Williams",         "pos": "RB",  "proj": 166, "team": "DEN", "adp": 58.1},
+    {"player": "Chuba Hubbard",            "pos": "RB",  "proj": 160, "team": "CAR", "adp": 85.2},
+    {"player": "Najee Harris",             "pos": "RB",  "proj": 153, "team": "LAC", "adp": 153.8},
+    {"player": "Alvin Kamara",             "pos": "RB",  "proj": 147, "team": "NO", "adp": 82.3},
+    {"player": "Miles Sanders",            "pos": "RB",  "proj": 140, "team": "CAR", "adp": 162.1},
+    {"player": "Devin Singletary",         "pos": "RB",  "proj": 133, "team": "NYG", "adp": 168.4},
+    {"player": "Ezekiel Elliott",          "pos": "RB",  "proj": 126, "team": "DAL", "adp": 174.2},
+    {"player": "Kareem Hunt",              "pos": "RB",  "proj": 120, "team": "KC", "adp": 170.8},
+    {"player": "Dameon Pierce",            "pos": "RB",  "proj": 113, "team": "HOU", "adp": 176.3},
+    {"player": "David Montgomery",         "pos": "RB",  "proj": 107, "team": "DET", "adp": 102.5},
+    {"player": "Tyjae Spears",             "pos": "RB",  "proj": 100, "team": "TEN", "adp": 163.9},
+    {"player": "Rico Dowdle",              "pos": "RB",  "proj":  94, "team": "DAL", "adp": 78.1},
+    {"player": "Jaylen Warren",            "pos": "RB",  "proj":  88, "team": "PIT", "adp": 78.6},
+    {"player": "Ty Chandler",              "pos": "RB",  "proj":  82, "team": "MIN", "adp": 177.2},
+    {"player": "Jaleel McLaughlin",        "pos": "RB",  "proj":  76, "team": "DEN", "adp": 179.6},
+    {"player": "Roschon Johnson",          "pos": "RB",  "proj":  70, "team": "CHI", "adp": 181.3},
+    {"player": "Kimani Vidal",             "pos": "RB",  "proj":  64, "team": "LAC", "adp": 183.8},
+    {"player": "Patrick Taylor",           "pos": "RB",  "proj":  58, "team": "MIA", "adp": 185.4},
+    {"player": "Keaton Mitchell",          "pos": "RB",  "proj":  54, "team": "BAL", "adp": 187.1},
+    {"player": "Marlon Mack",              "pos": "RB",  "proj":  50, "team": "HOU", "adp": 191.5},
+    {"player": "Samaje Perine",            "pos": "RB",  "proj":  46, "team": "DEN", "adp": 193.8},
+    {"player": "Elijah Mitchell",          "pos": "RB",  "proj":  42, "team": "SF", "adp": 195.2},
+    {"player": "Jordan Mason",             "pos": "RB",  "proj":  38, "team": "SF", "adp": 58.7},
+    {"player": "Chris Rodriguez Jr.",      "pos": "RB",  "proj":  34, "team": "WAS", "adp": 172.4},
     # ── WRs ──────────────────────────────────────────────────────────────────
-    {"player": "Ja'Marr Chase",            "pos": "WR",  "proj": 360, "team": "CIN", "adp": 2.3},
-    {"player": "Puka Nacua",               "pos": "WR",  "proj": 355, "team": "LAR", "adp": 13.8},
-    {"player": "CeeDee Lamb",              "pos": "WR",  "proj": 350, "team": "DAL", "adp": 8.4},
-    {"player": "Justin Jefferson",         "pos": "WR",  "proj": 350, "team": "MIN", "adp": 10.2},
-    {"player": "Amon-Ra St. Brown",        "pos": "WR",  "proj": 340, "team": "DET", "adp": 15.6},
+    {"player": "Ja'Marr Chase",            "pos": "WR",  "proj": 360, "team": "CIN", "adp": 4.1},
+    {"player": "Puka Nacua",               "pos": "WR",  "proj": 355, "team": "LAR", "adp": 3.2},
+    {"player": "CeeDee Lamb",              "pos": "WR",  "proj": 350, "team": "DAL", "adp": 10.4},
+    {"player": "Justin Jefferson",         "pos": "WR",  "proj": 350, "team": "MIN", "adp": 24.1},
+    {"player": "Amon-Ra St. Brown",        "pos": "WR",  "proj": 340, "team": "DET", "adp": 11.2},
     {"player": "Tyreek Hill",              "pos": "WR",  "proj": 325, "team": "MIA", "adp": 18.9},
-    {"player": "Jaxon Smith-Njigba",       "pos": "WR",  "proj": 330, "team": "SEA", "adp": 21.4},
-    {"player": "Malik Nabers",             "pos": "WR",  "proj": 315, "team": "NYG", "adp": 24.7},
-    {"player": "A.J. Brown",               "pos": "WR",  "proj": 315, "team": "PHI", "adp": 27.1},
-    {"player": "Marvin Harrison Jr.",      "pos": "WR",  "proj": 310, "team": "ARI", "adp": 29.8},
-    {"player": "Nico Collins",             "pos": "WR",  "proj": 305, "team": "HOU", "adp": 33.5},
-    {"player": "Cooper Kupp",              "pos": "WR",  "proj": 305, "team": "LAR", "adp": 36.2},
-    {"player": "Drake London",             "pos": "WR",  "proj": 300, "team": "ATL", "adp": 39.7},
-    {"player": "Mike Evans",               "pos": "WR",  "proj": 300, "team": "TB", "adp": 43.3},
-    {"player": "Garrett Wilson",           "pos": "WR",  "proj": 295, "team": "NYJ", "adp": 46.8},
-    {"player": "DK Metcalf",               "pos": "WR",  "proj": 295, "team": "SEA", "adp": 50.4},
-    {"player": "Deebo Samuel",             "pos": "WR",  "proj": 290, "team": "SF", "adp": 57.6},
-    {"player": "Rashee Rice",              "pos": "WR",  "proj": 290, "team": "KC", "adp": 60.9},
-    {"player": "Chris Olave",              "pos": "WR",  "proj": 285, "team": "NO", "adp": 64.5},
-    {"player": "Brian Thomas Jr.",         "pos": "WR",  "proj": 285, "team": "JAX", "adp": 67.8},
-    {"player": "Davante Adams",            "pos": "WR",  "proj": 280, "team": "LV", "adp": 71.4},
-    {"player": "Rome Odunze",              "pos": "WR",  "proj": 280, "team": "CHI", "adp": 75.9},
-    {"player": "DJ Moore",                 "pos": "WR",  "proj": 275, "team": "CHI", "adp": 79.3},
-    {"player": "Xavier Worthy",            "pos": "WR",  "proj": 275, "team": "KC", "adp": 83.7},
-    {"player": "Jaylen Waddle",            "pos": "WR",  "proj": 270, "team": "MIA", "adp": 87.2},
-    {"player": "Ladd McConkey",            "pos": "WR",  "proj": 270, "team": "LAC", "adp": 90.8},
-    {"player": "Zay Flowers",              "pos": "WR",  "proj": 265, "team": "BAL", "adp": 95.3},
-    {"player": "Tetairoa McMillan",        "pos": "WR",  "proj": 265, "team": "CAR", "adp": 98.6},
-    {"player": "DeVonta Smith",            "pos": "WR",  "proj": 260, "team": "PHI", "adp": 103.1},
-    {"player": "Tank Dell",                "pos": "WR",  "proj": 255, "team": "HOU", "adp": 109.4},
-    {"player": "Stefon Diggs",             "pos": "WR",  "proj": 250, "team": "NE", "adp": 116.7},
-    {"player": "Tee Higgins",              "pos": "WR",  "proj": 245, "team": "CIN", "adp": 122.3},
-    {"player": "Amari Cooper",             "pos": "WR",  "proj": 240, "team": "BUF", "adp": 128.8},
-    {"player": "Christian Kirk",           "pos": "WR",  "proj": 235, "team": "JAX", "adp": 134.2},
-    {"player": "Terry McLaurin",           "pos": "WR",  "proj": 230, "team": "WAS", "adp": 137.6},
-    {"player": "Diontae Johnson",          "pos": "WR",  "proj": 225, "team": "CAR", "adp": 142.9},
-    {"player": "Keenan Allen",             "pos": "WR",  "proj": 220, "team": "CHI", "adp": 147.4},
-    {"player": "Courtland Sutton",         "pos": "WR",  "proj": 215, "team": "DEN", "adp": 152.8},
-    {"player": "Adam Thielen",             "pos": "WR",  "proj": 210, "team": "CAR", "adp": 156.3},
-    {"player": "Michael Pittman Jr.",      "pos": "WR",  "proj": 205, "team": "IND", "adp": 161.7},
-    {"player": "Calvin Ridley",            "pos": "WR",  "proj": 200, "team": "TEN", "adp": 165.2},
-    {"player": "Chris Godwin",             "pos": "WR",  "proj": 195, "team": "TB", "adp": 167.8},
-    {"player": "Kendrick Bourne",          "pos": "WR",  "proj": 190, "team": "NE", "adp": 170.4},
-    {"player": "Darnell Mooney",           "pos": "WR",  "proj": 185, "team": "ATL", "adp": 173.2},
-    {"player": "Quentin Johnston",         "pos": "WR",  "proj": 180, "team": "LAC", "adp": 176.5},
-    {"player": "Wan'Dale Robinson",        "pos": "WR",  "proj": 175, "team": "NYG", "adp": 178.9},
-    {"player": "Gabe Davis",               "pos": "WR",  "proj": 170, "team": "JAX", "adp": 181.6},
-    {"player": "Elijah Moore",             "pos": "WR",  "proj": 165, "team": "CLE", "adp": 184.3},
-    {"player": "Rashid Shaheed",           "pos": "WR",  "proj": 160, "team": "NO", "adp": 186.8},
-    {"player": "Cedric Tillman",           "pos": "WR",  "proj": 155, "team": "CLE", "adp": 188.4},
-    {"player": "Odell Beckham Jr.",        "pos": "WR",  "proj": 148, "team": "MIA", "adp": 190.9},
-    {"player": "Demarcus Robinson",        "pos": "WR",  "proj": 142, "team": "LAR", "adp": 192.6},
-    {"player": "Marquez Valdes-Scantling", "pos": "WR",  "proj": 136, "team": "NE", "adp": 194.3},
-    {"player": "Nelson Agholor",           "pos": "WR",  "proj": 130, "team": "NE", "adp": 195.7},
-    {"player": "Jalen Tolbert",            "pos": "WR",  "proj": 124, "team": "DAL", "adp": 197.1},
-    {"player": "Parris Campbell",          "pos": "WR",  "proj": 118, "team": "NYG", "adp": 198.4},
-    {"player": "Tutu Atwell",              "pos": "WR",  "proj": 112, "team": "LAR", "adp": 199.2},
-    {"player": "Dontayvion Wicks",         "pos": "WR",  "proj": 106, "team": "GB", "adp": 200.6},
-    {"player": "Jakobi Meyers",            "pos": "WR",  "proj": 100, "team": "LV", "adp": 201.8},
-    {"player": "Tre Tucker",               "pos": "WR",  "proj":  94, "team": "LV", "adp": 203.1},
-    {"player": "K.J. Osborn",              "pos": "WR",  "proj":  88, "team": "NE", "adp": 204.4},
-    {"player": "Khalil Shakir",            "pos": "WR",  "proj":  82, "team": "BUF", "adp": 205.7},
-    {"player": "Allen Lazard",             "pos": "WR",  "proj":  76, "team": "NYJ", "adp": 207.2},
-    {"player": "Kadarius Toney",           "pos": "WR",  "proj":  70, "team": "KC", "adp": 208.8},
-    {"player": "Skyy Moore",               "pos": "WR",  "proj":  64, "team": "KC", "adp": 210.3},
+    {"player": "Jaxon Smith-Njigba",       "pos": "WR",  "proj": 330, "team": "SEA", "adp": 6.3},
+    {"player": "Malik Nabers",             "pos": "WR",  "proj": 315, "team": "NYG", "adp": 15.2},
+    {"player": "A.J. Brown",               "pos": "WR",  "proj": 315, "team": "PHI", "adp": 30.4},
+    {"player": "Marvin Harrison Jr.",      "pos": "WR",  "proj": 310, "team": "ARI", "adp": 58.2},
+    {"player": "Nico Collins",             "pos": "WR",  "proj": 305, "team": "HOU", "adp": 19.4},
+    {"player": "Cooper Kupp",              "pos": "WR",  "proj": 305, "team": "LAR", "adp": 108.4},
+    {"player": "Drake London",             "pos": "WR",  "proj": 300, "team": "ATL", "adp": 13.1},
+    {"player": "Mike Evans",               "pos": "WR",  "proj": 300, "team": "TB", "adp": 80.2},
+    {"player": "Garrett Wilson",           "pos": "WR",  "proj": 295, "team": "NYJ", "adp": 39.2},
+    {"player": "DK Metcalf",               "pos": "WR",  "proj": 295, "team": "SEA", "adp": 67.3},
+    {"player": "Deebo Samuel",             "pos": "WR",  "proj": 290, "team": "SF", "adp": 110.3},
+    {"player": "Rashee Rice",              "pos": "WR",  "proj": 290, "team": "KC", "adp": 14.3},
+    {"player": "Chris Olave",              "pos": "WR",  "proj": 285, "team": "NO", "adp": 38.1},
+    {"player": "Brian Thomas Jr.",         "pos": "WR",  "proj": 285, "team": "JAX", "adp": 73.2},
+    {"player": "Davante Adams",            "pos": "WR",  "proj": 280, "team": "LV", "adp": 28.3},
+    {"player": "Rome Odunze",              "pos": "WR",  "proj": 280, "team": "CHI", "adp": 63.1},
+    {"player": "DJ Moore",                 "pos": "WR",  "proj": 275, "team": "CHI", "adp": 115.2},
+    {"player": "Xavier Worthy",            "pos": "WR",  "proj": 275, "team": "KC", "adp": 140.1},
+    {"player": "Jaylen Waddle",            "pos": "WR",  "proj": 270, "team": "MIA", "adp": 45.2},
+    {"player": "Ladd McConkey",            "pos": "WR",  "proj": 270, "team": "LAC", "adp": 70.1},
+    {"player": "Zay Flowers",              "pos": "WR",  "proj": 265, "team": "BAL", "adp": 48.1},
+    {"player": "Tetairoa McMillan",        "pos": "WR",  "proj": 265, "team": "CAR", "adp": 41.3},
+    {"player": "DeVonta Smith",            "pos": "WR",  "proj": 260, "team": "PHI", "adp": 55.4},
+    {"player": "Tank Dell",                "pos": "WR",  "proj": 255, "team": "HOU", "adp": 118.3},
+    {"player": "Stefon Diggs",             "pos": "WR",  "proj": 250, "team": "NE", "adp": 90.1},
+    {"player": "Tee Higgins",              "pos": "WR",  "proj": 245, "team": "CIN", "adp": 36.1},
+    {"player": "Amari Cooper",             "pos": "WR",  "proj": 240, "team": "BUF", "adp": 145.2},
+    {"player": "Christian Kirk",           "pos": "WR",  "proj": 235, "team": "JAX", "adp": 148.3},
+    {"player": "Terry McLaurin",           "pos": "WR",  "proj": 230, "team": "WAS", "adp": 44.2},
+    {"player": "Diontae Johnson",          "pos": "WR",  "proj": 225, "team": "CAR", "adp": 152.1},
+    {"player": "Keenan Allen",             "pos": "WR",  "proj": 220, "team": "CHI", "adp": 158.4},
+    {"player": "Courtland Sutton",         "pos": "WR",  "proj": 215, "team": "DEN", "adp": 62.3},
+    {"player": "Adam Thielen",             "pos": "WR",  "proj": 210, "team": "CAR", "adp": 164.2},
+    {"player": "Michael Pittman Jr.",      "pos": "WR",  "proj": 205, "team": "IND", "adp": 56.4},
+    {"player": "Calvin Ridley",            "pos": "WR",  "proj": 200, "team": "TEN", "adp": 142.3},
+    {"player": "Chris Godwin",             "pos": "WR",  "proj": 195, "team": "TB", "adp": 125.1},
+    {"player": "Kendrick Bourne",          "pos": "WR",  "proj": 190, "team": "NE", "adp": 168.4},
+    {"player": "Darnell Mooney",           "pos": "WR",  "proj": 185, "team": "ATL", "adp": 160.2},
+    {"player": "Quentin Johnston",         "pos": "WR",  "proj": 180, "team": "LAC", "adp": 138.3},
+    {"player": "Wan'Dale Robinson",        "pos": "WR",  "proj": 175, "team": "NYG", "adp": 143.1},
+    {"player": "Gabe Davis",               "pos": "WR",  "proj": 170, "team": "JAX", "adp": 173.4},
+    {"player": "Elijah Moore",             "pos": "WR",  "proj": 165, "team": "CLE", "adp": 178.2},
+    {"player": "Rashid Shaheed",           "pos": "WR",  "proj": 160, "team": "NO", "adp": 163.4},
+    {"player": "Cedric Tillman",           "pos": "WR",  "proj": 155, "team": "CLE", "adp": 169.1},
+    {"player": "Odell Beckham Jr.",        "pos": "WR",  "proj": 148, "team": "MIA", "adp": 180.2},
+    {"player": "Demarcus Robinson",        "pos": "WR",  "proj": 142, "team": "LAR", "adp": 187.4},
+    {"player": "Marquez Valdes-Scantling", "pos": "WR",  "proj": 136, "team": "NE", "adp": 191.2},
+    {"player": "Nelson Agholor",           "pos": "WR",  "proj": 130, "team": "NE", "adp": 193.4},
+    {"player": "Jalen Tolbert",            "pos": "WR",  "proj": 124, "team": "DAL", "adp": 176.3},
+    {"player": "Parris Campbell",          "pos": "WR",  "proj": 118, "team": "NYG", "adp": 182.1},
+    {"player": "Tutu Atwell",              "pos": "WR",  "proj": 112, "team": "LAR", "adp": 185.6},
+    {"player": "Dontayvion Wicks",         "pos": "WR",  "proj": 106, "team": "GB", "adp": 172.8},
+    {"player": "Jakobi Meyers",            "pos": "WR",  "proj": 100, "team": "LV", "adp": 155.3},
+    {"player": "Tre Tucker",               "pos": "WR",  "proj":  94, "team": "LV", "adp": 195.1},
+    {"player": "K.J. Osborn",              "pos": "WR",  "proj":  88, "team": "NE", "adp": 197.4},
+    {"player": "Khalil Shakir",            "pos": "WR",  "proj":  82, "team": "BUF", "adp": 135.4},
+    {"player": "Allen Lazard",             "pos": "WR",  "proj":  76, "team": "NYJ", "adp": 196.2},
+    {"player": "Kadarius Toney",           "pos": "WR",  "proj":  70, "team": "KC", "adp": 198.8},
+    {"player": "Skyy Moore",               "pos": "WR",  "proj":  64, "team": "KC", "adp": 200.3},
     # ── TEs ──────────────────────────────────────────────────────────────────
-    {"player": "Travis Kelce",             "pos": "TE",  "proj": 280, "team": "KC", "adp": 17.2},
-    {"player": "Sam LaPorta",              "pos": "TE",  "proj": 270, "team": "DET", "adp": 34.8},
-    {"player": "Brock Bowers",             "pos": "TE",  "proj": 265, "team": "LV", "adp": 37.6},
-    {"player": "Trey McBride",             "pos": "TE",  "proj": 255, "team": "ARI", "adp": 41.4},
-    {"player": "Mark Andrews",             "pos": "TE",  "proj": 250, "team": "BAL", "adp": 53.9},
-    {"player": "George Kittle",            "pos": "TE",  "proj": 245, "team": "SF", "adp": 58.7},
-    {"player": "Dalton Kincaid",           "pos": "TE",  "proj": 240, "team": "BUF", "adp": 72.3},
-    {"player": "Kyle Pitts",               "pos": "TE",  "proj": 235, "team": "ATL", "adp": 76.8},
-    {"player": "David Njoku",              "pos": "TE",  "proj": 230, "team": "CLE", "adp": 84.5},
-    {"player": "Evan Engram",              "pos": "TE",  "proj": 225, "team": "JAX", "adp": 91.2},
-    {"player": "T.J. Hockenson",           "pos": "TE",  "proj": 220, "team": "MIN", "adp": 97.6},
-    {"player": "Jake Ferguson",            "pos": "TE",  "proj": 215, "team": "DAL", "adp": 106.4},
-    {"player": "Pat Freiermuth",           "pos": "TE",  "proj": 210, "team": "PIT", "adp": 113.9},
-    {"player": "Cole Kmet",                "pos": "TE",  "proj": 205, "team": "CHI", "adp": 119.7},
-    {"player": "Isaiah Likely",            "pos": "TE",  "proj": 200, "team": "BAL", "adp": 126.1},
-    {"player": "Hunter Henry",             "pos": "TE",  "proj": 193, "team": "NE", "adp": 132.8},
-    {"player": "Gerald Everett",           "pos": "TE",  "proj": 186, "team": "LAC", "adp": 140.3},
-    {"player": "Mike Gesicki",             "pos": "TE",  "proj": 178, "team": "CIN", "adp": 146.9},
-    {"player": "Juwan Johnson",            "pos": "TE",  "proj": 170, "team": "NO", "adp": 153.4},
-    {"player": "Tucker Kraft",             "pos": "TE",  "proj": 163, "team": "GB", "adp": 159.8},
-    {"player": "Noah Fant",                "pos": "TE",  "proj": 157, "team": "SEA", "adp": 163.2},
-    {"player": "Cade Otton",               "pos": "TE",  "proj": 150, "team": "TB", "adp": 166.7},
-    {"player": "Tyler Higbee",             "pos": "TE",  "proj": 143, "team": "LAR", "adp": 169.4},
-    {"player": "Jonnu Smith",              "pos": "TE",  "proj": 136, "team": "MIA", "adp": 175.8},
+    {"player": "Travis Kelce",             "pos": "TE",  "proj": 280, "team": "KC", "adp": 100.2},
+    {"player": "Sam LaPorta",              "pos": "TE",  "proj": 270, "team": "DET", "adp": 70.3},
+    {"player": "Brock Bowers",             "pos": "TE",  "proj": 265, "team": "LV", "adp": 28.4},
+    {"player": "Trey McBride",             "pos": "TE",  "proj": 255, "team": "ARI", "adp": 12.3},
+    {"player": "Mark Andrews",             "pos": "TE",  "proj": 250, "team": "BAL", "adp": 95.4},
+    {"player": "George Kittle",            "pos": "TE",  "proj": 245, "team": "SF", "adp": 40.2},
+    {"player": "Dalton Kincaid",           "pos": "TE",  "proj": 240, "team": "BUF", "adp": 138.2},
+    {"player": "Kyle Pitts",               "pos": "TE",  "proj": 235, "team": "ATL", "adp": 62.1},
+    {"player": "David Njoku",              "pos": "TE",  "proj": 230, "team": "CLE", "adp": 115.3},
+    {"player": "Evan Engram",              "pos": "TE",  "proj": 225, "team": "JAX", "adp": 140.2},
+    {"player": "T.J. Hockenson",           "pos": "TE",  "proj": 220, "team": "MIN", "adp": 88.1},
+    {"player": "Jake Ferguson",            "pos": "TE",  "proj": 215, "team": "DAL", "adp": 78.3},
+    {"player": "Pat Freiermuth",           "pos": "TE",  "proj": 210, "team": "PIT", "adp": 150.2},
+    {"player": "Cole Kmet",                "pos": "TE",  "proj": 205, "team": "CHI", "adp": 155.1},
+    {"player": "Isaiah Likely",            "pos": "TE",  "proj": 200, "team": "BAL", "adp": 105.3},
+    {"player": "Hunter Henry",             "pos": "TE",  "proj": 193, "team": "NE", "adp": 112.4},
+    {"player": "Gerald Everett",           "pos": "TE",  "proj": 186, "team": "LAC", "adp": 165.1},
+    {"player": "Mike Gesicki",             "pos": "TE",  "proj": 178, "team": "CIN", "adp": 170.3},
+    {"player": "Juwan Johnson",            "pos": "TE",  "proj": 170, "team": "NO", "adp": 130.4},
+    {"player": "Tucker Kraft",             "pos": "TE",  "proj": 163, "team": "GB", "adp": 48.4},
+    {"player": "Noah Fant",                "pos": "TE",  "proj": 157, "team": "SEA", "adp": 175.2},
+    {"player": "Cade Otton",               "pos": "TE",  "proj": 150, "team": "TB", "adp": 180.1},
+    {"player": "Tyler Higbee",             "pos": "TE",  "proj": 143, "team": "LAR", "adp": 178.3},
+    {"player": "Jonnu Smith",              "pos": "TE",  "proj": 136, "team": "MIA", "adp": 172.4},
     # ── Ks ───────────────────────────────────────────────────────────────────
-    {"player": "Justin Tucker",            "pos": "K",   "proj": 155, "team": "BAL", "adp": 145.0},
-    {"player": "Evan McPherson",           "pos": "K",   "proj": 148, "team": "CIN", "adp": 150.0},
-    {"player": "Harrison Butker",          "pos": "K",   "proj": 142, "team": "KC", "adp": 155.0},
-    {"player": "Tyler Bass",               "pos": "K",   "proj": 136, "team": "BUF", "adp": 158.0},
-    {"player": "Jake Elliott",             "pos": "K",   "proj": 130, "team": "PHI", "adp": 161.0},
-    {"player": "Brandon Aubrey",           "pos": "K",   "proj": 125, "team": "DAL", "adp": 163.0},
-    {"player": "Cameron Dicker",           "pos": "K",   "proj": 120, "team": "LAC", "adp": 165.0},
-    {"player": "Younghoe Koo",             "pos": "K",   "proj": 115, "team": "ATL", "adp": 167.0},
-    {"player": "Chris Boswell",            "pos": "K",   "proj": 110, "team": "PIT", "adp": 169.0},
-    {"player": "Greg Joseph",              "pos": "K",   "proj": 105, "team": "MIN", "adp": 171.0},
-    {"player": "Matt Gay",                 "pos": "K",   "proj": 100, "team": "IND", "adp": 173.0},
-    {"player": "Jason Sanders",            "pos": "K",   "proj":  95, "team": "MIA", "adp": 175.0},
+    {"player": "Justin Tucker",            "pos": "K",   "proj": 155, "team": "BAL", "adp": 148.1},
+    {"player": "Evan McPherson",           "pos": "K",   "proj": 148, "team": "CIN", "adp": 152.3},
+    {"player": "Harrison Butker",          "pos": "K",   "proj": 142, "team": "KC", "adp": 156.4},
+    {"player": "Tyler Bass",               "pos": "K",   "proj": 136, "team": "BUF", "adp": 159.2},
+    {"player": "Jake Elliott",             "pos": "K",   "proj": 130, "team": "PHI", "adp": 161.8},
+    {"player": "Brandon Aubrey",           "pos": "K",   "proj": 125, "team": "DAL", "adp": 163.5},
+    {"player": "Cameron Dicker",           "pos": "K",   "proj": 120, "team": "LAC", "adp": 165.2},
+    {"player": "Younghoe Koo",             "pos": "K",   "proj": 115, "team": "ATL", "adp": 167.4},
+    {"player": "Chris Boswell",            "pos": "K",   "proj": 110, "team": "PIT", "adp": 169.1},
+    {"player": "Greg Joseph",              "pos": "K",   "proj": 105, "team": "MIN", "adp": 171.3},
+    {"player": "Matt Gay",                 "pos": "K",   "proj": 100, "team": "IND", "adp": 173.6},
+    {"player": "Jason Sanders",            "pos": "K",   "proj":  95, "team": "MIA", "adp": 175.8},
     # ── DEF ──────────────────────────────────────────────────────────────────
-    {"player": "San Francisco 49ers",      "pos": "DEF", "proj": 155, "team": "SF", "adp": 148.0},
-    {"player": "Dallas Cowboys",           "pos": "DEF", "proj": 148, "team": "DAL", "adp": 153.0},
-    {"player": "New England Patriots",     "pos": "DEF", "proj": 142, "team": "NE", "adp": 157.0},
-    {"player": "Baltimore Ravens",         "pos": "DEF", "proj": 136, "team": "BAL", "adp": 160.0},
-    {"player": "Buffalo Bills",            "pos": "DEF", "proj": 130, "team": "BUF", "adp": 162.0},
-    {"player": "Pittsburgh Steelers",      "pos": "DEF", "proj": 125, "team": "PIT", "adp": 164.0},
-    {"player": "Cleveland Browns",         "pos": "DEF", "proj": 120, "team": "CLE", "adp": 166.0},
-    {"player": "Philadelphia Eagles",      "pos": "DEF", "proj": 115, "team": "PHI", "adp": 168.0},
-    {"player": "Kansas City Chiefs",       "pos": "DEF", "proj": 110, "team": "KC", "adp": 170.0},
-    {"player": "Miami Dolphins",           "pos": "DEF", "proj": 105, "team": "MIA", "adp": 172.0},
-    {"player": "Minnesota Vikings",        "pos": "DEF", "proj": 100, "team": "MIN", "adp": 174.0},
-    {"player": "Los Angeles Rams",         "pos": "DEF", "proj":  95, "team": "LAR", "adp": 176.0},
+    {"player": "San Francisco 49ers",      "pos": "DEF", "proj": 155, "team": "SF", "adp": 149.2},
+    {"player": "Dallas Cowboys",           "pos": "DEF", "proj": 148, "team": "DAL", "adp": 153.4},
+    {"player": "New England Patriots",     "pos": "DEF", "proj": 142, "team": "NE", "adp": 157.1},
+    {"player": "Baltimore Ravens",         "pos": "DEF", "proj": 136, "team": "BAL", "adp": 159.8},
+    {"player": "Buffalo Bills",            "pos": "DEF", "proj": 130, "team": "BUF", "adp": 161.4},
+    {"player": "Pittsburgh Steelers",      "pos": "DEF", "proj": 125, "team": "PIT", "adp": 163.7},
+    {"player": "Cleveland Browns",         "pos": "DEF", "proj": 120, "team": "CLE", "adp": 165.9},
+    {"player": "Philadelphia Eagles",      "pos": "DEF", "proj": 115, "team": "PHI", "adp": 167.3},
+    {"player": "Kansas City Chiefs",       "pos": "DEF", "proj": 110, "team": "KC", "adp": 169.6},
+    {"player": "Miami Dolphins",           "pos": "DEF", "proj": 105, "team": "MIA", "adp": 171.8},
+    {"player": "Minnesota Vikings",        "pos": "DEF", "proj": 100, "team": "MIN", "adp": 173.4},
+    {"player": "Los Angeles Rams",         "pos": "DEF", "proj":  95, "team": "LAR", "adp": 175.9},
 ]
 players_df = pd.DataFrame(player_data).sort_values("adp", ascending=True).reset_index(drop=True)
 
@@ -348,7 +348,9 @@ defaults = {
     "current_week":     1,
     "weekly_results":   [],
     "week_results":     [],
-    "week_player_scores": {},   # slot -> (player, score) for user's last simmed week
+    "week_player_scores": {},   # slot -> (player, score, on_bye) for user's last simmed week
+    "opp_player_scores":  {},   # same structure for opponent
+    "opp_team_name":      "",   # name of user's opponent this week
     "my_lineup":        {},     # slot -> player name
     "playoff_seeds":    [],
     "playoff_wc":       [],
@@ -834,6 +836,40 @@ elif ss.phase == "week_preview":
         opp = your_game[1] if your_game[0] == ss.your_team else your_game[0]
         st.info(f"**Your matchup:** {ss.your_team} vs **{opp}**")
 
+        opp_roster = ss.rosters.get(opp, [])
+        if opp_roster:
+            with st.expander(f"🔍 Scout {opp}'s Roster", expanded=False):
+                opp_lineup = auto_set_lineup(opp_roster)
+                starters_set = set(opp_lineup.values())
+                rows = []
+                for slot, player in opp_lineup.items():
+                    if player:
+                        team   = get_player_team(player)
+                        bye_wk = BYE_WEEKS.get(team, "—")
+                        rows.append({
+                            "Slot":     slot,
+                            "Player":   player,
+                            "Team":     team,
+                            "Pos":      get_player_pos(player),
+                            "Proj/wk":  f"{get_player_proj(player)/17:.1f}",
+                            "Bye Wk":   f"💤 THIS WEEK" if bye_wk == wk else str(bye_wk),
+                            "Status":   "🟢 Starter",
+                        })
+                bench = [p for p in opp_roster if p not in starters_set]
+                for player in bench:
+                    team   = get_player_team(player)
+                    bye_wk = BYE_WEEKS.get(team, "—")
+                    rows.append({
+                        "Slot":     "BN",
+                        "Player":   player,
+                        "Team":     team,
+                        "Pos":      get_player_pos(player),
+                        "Proj/wk":  f"{get_player_proj(player)/17:.1f}",
+                        "Bye Wk":   f"💤 THIS WEEK" if bye_wk == wk else str(bye_wk),
+                        "Status":   "⚪ Bench",
+                    })
+                st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+
     # Lineup summary callout
     starters = {s: p for s, p in ss.my_lineup.items() if p}
     if starters:
@@ -879,12 +915,18 @@ elif ss.phase == "week_preview":
             for t1, t2 in matchups:
                 if t1 == ss.your_team:
                     s1, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
-                    s2 = sim_team_score(ss.team_strengths[t2])
+                    opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                    s2, opp_scores = score_lineup(opp_lineup, nfl_week=wk)
                     ss.week_player_scores = player_scores
+                    ss.opp_player_scores  = opp_scores
+                    ss.opp_team_name      = t2
                 elif t2 == ss.your_team:
                     s2, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
-                    s1 = sim_team_score(ss.team_strengths[t1])
+                    opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                    s1, opp_scores = score_lineup(opp_lineup, nfl_week=wk)
                     ss.week_player_scores = player_scores
+                    ss.opp_player_scores  = opp_scores
+                    ss.opp_team_name      = t1
                 else:
                     s1 = sim_team_score(ss.team_strengths[t1])
                     s2 = sim_team_score(ss.team_strengths[t2])
@@ -901,14 +943,20 @@ elif ss.phase == "week_preview":
                 for t1, t2 in week_matchups:
                     if t1 == ss.your_team:
                         s1, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
-                        s2 = sim_team_score(ss.team_strengths[t2])
+                        opp_lineup = auto_set_lineup(ss.rosters.get(t2, []))
+                        s2, opp_scores = score_lineup(opp_lineup, nfl_week=w)
                         if w == WEEKS_REG:
                             ss.week_player_scores = player_scores
+                            ss.opp_player_scores  = opp_scores
+                            ss.opp_team_name      = t2
                     elif t2 == ss.your_team:
                         s2, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
-                        s1 = sim_team_score(ss.team_strengths[t1])
+                        opp_lineup = auto_set_lineup(ss.rosters.get(t1, []))
+                        s1, opp_scores = score_lineup(opp_lineup, nfl_week=w)
                         if w == WEEKS_REG:
                             ss.week_player_scores = player_scores
+                            ss.opp_player_scores  = opp_scores
+                            ss.opp_team_name      = t1
                     else:
                         s1 = sim_team_score(ss.team_strengths[t1])
                         s2 = sim_team_score(ss.team_strengths[t2])
@@ -955,26 +1003,47 @@ elif ss.phase == "week_results":
         else:
             st.warning(f"🤝 Tie.  {ys} – {os}")
 
-    # Individual player scores for user
+    # ── Side-by-side matchup scorecard ───────────────────────────────────────
     if ss.week_player_scores:
-        with st.expander("📊 Your player scores this week", expanded=True):
+        opp_name = ss.opp_team_name or "Opponent"
+
+        def build_score_rows(score_dict):
             rows = []
-            for slot, val in ss.week_player_scores.items():
+            for slot, val in score_dict.items():
                 player = val[0] if val else None
                 score  = val[1] if len(val) > 1 else 0.0
                 on_bye = val[2] if len(val) > 2 else False
                 if player:
                     rows.append({
-                        "Slot":    slot,
-                        "Player":  player,
-                        "Team":    get_player_team(player),
-                        "Pos":     get_player_pos(player),
-                        "Score":   score,
-                        "Proj":    f"{get_player_proj(player)/17:.1f}",
-                        "Status":  "💤 BYE" if on_bye else "✅ Active",
+                        "Slot":   slot,
+                        "Player": player,
+                        "Team":   get_player_team(player),
+                        "Pos":    get_player_pos(player),
+                        "Score":  score,
+                        "Proj":   f"{get_player_proj(player)/17:.1f}",
+                        "Status": "💤 BYE" if on_bye else "✅",
                     })
-            df = pd.DataFrame(rows)
-            st.dataframe(df, use_container_width=True, hide_index=True)
+            return pd.DataFrame(rows)
+
+        with st.expander("📊 Matchup Scorecard", expanded=True):
+            mc1, mc2 = st.columns(2)
+
+            with mc1:
+                my_df = build_score_rows(ss.week_player_scores)
+                my_total = round(my_df["Score"].sum(), 2) if not my_df.empty else 0.0
+                st.markdown(f"### 🏈 {ss.your_team}")
+                st.metric("Total Score", my_total)
+                st.dataframe(my_df, use_container_width=True, hide_index=True)
+
+            with mc2:
+                opp_df = build_score_rows(ss.opp_player_scores) if ss.opp_player_scores else pd.DataFrame()
+                opp_total = round(opp_df["Score"].sum(), 2) if not opp_df.empty else 0.0
+                st.markdown(f"### 🆚 {opp_name}")
+                st.metric("Total Score", opp_total)
+                if not opp_df.empty:
+                    st.dataframe(opp_df, use_container_width=True, hide_index=True)
+                else:
+                    st.info("No opponent lineup data available.")
 
     with st.expander("📊 Standings after Week {wk}"):
         st.dataframe(get_standings(ss.weekly_results, all_teams), use_container_width=True, hide_index=True)
