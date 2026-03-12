@@ -544,61 +544,45 @@ elif ss.phase == "draft":
     left_col, right_col = st.columns([3, 2])
 
     with left_col:
-        # Position filter tabs
-        pos_tabs = st.tabs(["All", "QB", "RB", "WR", "TE", "K", "DEF"])
-        pos_filters = ["All", "QB", "RB", "WR", "TE", "K", "DEF"]
+        # Position filter
+        pos_filter = st.radio(
+            "Filter",
+            ["All", "QB", "RB", "WR", "TE", "K", "DEF"],
+            horizontal=True,
+            label_visibility="collapsed",
+            key="pos_filter_radio"
+        )
 
-        for tab, pos_filter in zip(pos_tabs, pos_filters):
-            with tab:
-                if pos_filter == "All":
-                    view_df = ss.drafted.head(40)
-                else:
-                    view_df = ss.drafted[ss.drafted["pos"] == pos_filter].head(30)
+        if pos_filter == "All":
+            view_df = ss.drafted.head(40).reset_index(drop=True)
+        else:
+            view_df = ss.drafted[ss.drafted["pos"] == pos_filter].head(30).reset_index(drop=True)
 
-                if view_df.empty:
-                    st.write("No players available.")
-                    continue
-
-                # Build HTML table
-                rows_html = ""
-                for i, (_, row) in enumerate(view_df.iterrows(), 1):
+        if view_df.empty:
+            st.info("No players available at this position.")
+        else:
+            for i, row in view_df.iterrows():
+                p_col, btn_col = st.columns([5, 1])
+                with p_col:
                     badge = pos_badge(row["pos"])
-                    rows_html += f"""
-                    <div class="player-row">
-                        <span class="player-rank">{i}</span>
-                        {badge}
-                        <span class="player-name">{row['player']}</span>
-                        <span class="player-proj">{row['proj']} pts</span>
-                    </div>"""
-                st.markdown(rows_html, unsafe_allow_html=True)
-
-                if is_yours:
-                    st.markdown("---")
-                    player_options = view_df["player"].tolist()
-                    sel_key = f"pick_select_{pos_filter}"
-                    sel = st.selectbox(
-                        "Click to select, then draft:",
-                        player_options,
-                        index=None,
-                        placeholder="Select a player...",
-                        key=sel_key,
-                        label_visibility="collapsed"
+                    st.markdown(
+                        f'<div class="player-row" style="border:none;padding:4px 0">'
+                        f'<span class="player-rank">{i+1}</span>'
+                        f'{badge}'
+                        f'<span class="player-name">{row["player"]}</span>'
+                        f'<span class="player-proj">{row["proj"]} pts</span>'
+                        f'</div>',
+                        unsafe_allow_html=True
                     )
-                    if sel:
-                        pos_of_sel = get_player_pos(sel)
-                        proj_of_sel = get_player_proj(sel)
-                        st.markdown(
-                            f"**Selected:** {sel} &nbsp; {pos_badge(pos_of_sel)} &nbsp; "
-                            f"<span style='color:#555;font-size:0.9rem'>{proj_of_sel} proj pts</span>",
-                            unsafe_allow_html=True
-                        )
-                        if st.button(f"✅ Draft {sel}", type="primary", key=f"draft_btn_{pos_filter}"):
-                            ss.rosters[ss.your_team].append(sel)
-                            ss.drafted = ss.drafted[ss.drafted["player"] != sel]
+                with btn_col:
+                    if is_yours:
+                        if st.button("Draft", key=f"pick_{i}_{row['player']}", use_container_width=True):
+                            ss.rosters[ss.your_team].append(row["player"])
+                            ss.drafted = ss.drafted[ss.drafted["player"] != row["player"]]
                             ss.current_pick += 1
                             st.rerun()
 
-        # CPU controls (shown outside tabs so always visible when not your pick)
+        # CPU controls (shown below list when not your pick)
         if not is_yours:
             st.markdown("---")
             ca, cb, cc = st.columns(3)
