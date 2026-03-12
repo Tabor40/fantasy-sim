@@ -7,193 +7,192 @@ st.set_page_config(page_title="FF Simulator", page_icon="🏈")
 # ── Player Pool (180 players — 15 rounds × 12 teams) ─────────────────────────
 player_data = [
     # ── QBs ──────────────────────────────────────────────────────────────────
-    {"player": "Josh Allen",               "pos": "QB",  "proj": 420},
-    {"player": "Lamar Jackson",            "pos": "QB",  "proj": 410},
-    {"player": "Jalen Hurts",              "pos": "QB",  "proj": 400},
-    {"player": "Kyler Murray",             "pos": "QB",  "proj": 390},
-    {"player": "C.J. Stroud",              "pos": "QB",  "proj": 380},
-    {"player": "Joe Burrow",               "pos": "QB",  "proj": 375},
-    {"player": "Patrick Mahomes",          "pos": "QB",  "proj": 370},
-    {"player": "Jayden Daniels",           "pos": "QB",  "proj": 365},
-    {"player": "Baker Mayfield",           "pos": "QB",  "proj": 350},
-    {"player": "Tua Tagovailoa",           "pos": "QB",  "proj": 345},
-    {"player": "Sam Darnold",              "pos": "QB",  "proj": 338},
-    {"player": "Jordan Love",              "pos": "QB",  "proj": 332},
-    {"player": "Dak Prescott",             "pos": "QB",  "proj": 325},
-    {"player": "Trevor Lawrence",          "pos": "QB",  "proj": 318},
-    {"player": "Matthew Stafford",         "pos": "QB",  "proj": 310},
-    {"player": "Geno Smith",               "pos": "QB",  "proj": 302},
-    {"player": "Anthony Richardson",       "pos": "QB",  "proj": 295},
-    {"player": "Justin Fields",            "pos": "QB",  "proj": 285},
-    {"player": "Derek Carr",               "pos": "QB",  "proj": 275},
-    {"player": "Kirk Cousins",             "pos": "QB",  "proj": 265},
-    {"player": "Caleb Williams",           "pos": "QB",  "proj": 258},
-    {"player": "Will Levis",               "pos": "QB",  "proj": 250},
+    {"player": "Josh Allen",               "pos": "QB",  "proj": 420, "team": "BUF"},
+    {"player": "Lamar Jackson",            "pos": "QB",  "proj": 410, "team": "BAL"},
+    {"player": "Jalen Hurts",              "pos": "QB",  "proj": 400, "team": "PHI"},
+    {"player": "Kyler Murray",             "pos": "QB",  "proj": 390, "team": "ARI"},
+    {"player": "C.J. Stroud",              "pos": "QB",  "proj": 380, "team": "HOU"},
+    {"player": "Joe Burrow",               "pos": "QB",  "proj": 375, "team": "CIN"},
+    {"player": "Patrick Mahomes",          "pos": "QB",  "proj": 370, "team": "KC"},
+    {"player": "Jayden Daniels",           "pos": "QB",  "proj": 365, "team": "WAS"},
+    {"player": "Baker Mayfield",           "pos": "QB",  "proj": 350, "team": "TB"},
+    {"player": "Tua Tagovailoa",           "pos": "QB",  "proj": 345, "team": "MIA"},
+    {"player": "Sam Darnold",              "pos": "QB",  "proj": 338, "team": "MIN"},
+    {"player": "Jordan Love",              "pos": "QB",  "proj": 332, "team": "GB"},
+    {"player": "Dak Prescott",             "pos": "QB",  "proj": 325, "team": "DAL"},
+    {"player": "Trevor Lawrence",          "pos": "QB",  "proj": 318, "team": "JAX"},
+    {"player": "Matthew Stafford",         "pos": "QB",  "proj": 310, "team": "LAR"},
+    {"player": "Geno Smith",               "pos": "QB",  "proj": 302, "team": "SEA"},
+    {"player": "Anthony Richardson",       "pos": "QB",  "proj": 295, "team": "IND"},
+    {"player": "Justin Fields",            "pos": "QB",  "proj": 285, "team": "PIT"},
+    {"player": "Derek Carr",               "pos": "QB",  "proj": 275, "team": "NO"},
+    {"player": "Kirk Cousins",             "pos": "QB",  "proj": 265, "team": "ATL"},
+    {"player": "Caleb Williams",           "pos": "QB",  "proj": 258, "team": "CHI"},
+    {"player": "Will Levis",               "pos": "QB",  "proj": 250, "team": "TEN"},
     # ── RBs ──────────────────────────────────────────────────────────────────
-    {"player": "Bijan Robinson",           "pos": "RB",  "proj": 380},
-    {"player": "Jahmyr Gibbs",             "pos": "RB",  "proj": 370},
-    {"player": "Christian McCaffrey",      "pos": "RB",  "proj": 370},
-    {"player": "Saquon Barkley",           "pos": "RB",  "proj": 360},
-    {"player": "Jonathan Taylor",          "pos": "RB",  "proj": 340},
-    {"player": "De'Von Achane",            "pos": "RB",  "proj": 320},
-    {"player": "Kyren Williams",           "pos": "RB",  "proj": 310},
-    {"player": "James Cook",               "pos": "RB",  "proj": 255},
-    {"player": "Kenneth Walker III",       "pos": "RB",  "proj": 250},
-    {"player": "Derrick Henry",            "pos": "RB",  "proj": 245},
-    {"player": "Josh Jacobs",              "pos": "RB",  "proj": 240},
-    {"player": "Breece Hall",              "pos": "RB",  "proj": 235},
-    {"player": "Rhamondre Stevenson",      "pos": "RB",  "proj": 228},
-    {"player": "Aaron Jones",              "pos": "RB",  "proj": 222},
-    {"player": "Tony Pollard",             "pos": "RB",  "proj": 215},
-    {"player": "Joe Mixon",                "pos": "RB",  "proj": 208},
-    {"player": "Rachaad White",            "pos": "RB",  "proj": 200},
-    {"player": "D'Andre Swift",            "pos": "RB",  "proj": 193},
-    {"player": "Isiah Pacheco",            "pos": "RB",  "proj": 186},
-    {"player": "Travis Etienne Jr.",       "pos": "RB",  "proj": 180},
-    {"player": "Zack Moss",                "pos": "RB",  "proj": 173},
-    {"player": "Javonte Williams",         "pos": "RB",  "proj": 166},
-    {"player": "Chuba Hubbard",            "pos": "RB",  "proj": 160},
-    {"player": "Najee Harris",             "pos": "RB",  "proj": 153},
-    {"player": "Alvin Kamara",             "pos": "RB",  "proj": 147},
-    {"player": "Miles Sanders",            "pos": "RB",  "proj": 140},
-    {"player": "Devin Singletary",         "pos": "RB",  "proj": 133},
-    {"player": "Ezekiel Elliott",          "pos": "RB",  "proj": 126},
-    {"player": "Kareem Hunt",              "pos": "RB",  "proj": 120},
-    {"player": "Dameon Pierce",            "pos": "RB",  "proj": 113},
-    {"player": "David Montgomery",         "pos": "RB",  "proj": 107},
-    {"player": "Tyjae Spears",             "pos": "RB",  "proj": 100},
-    {"player": "Rico Dowdle",              "pos": "RB",  "proj":  94},
-    {"player": "Jaylen Warren",            "pos": "RB",  "proj":  88},
-    {"player": "Ty Chandler",              "pos": "RB",  "proj":  82},
-    {"player": "Jaleel McLaughlin",        "pos": "RB",  "proj":  76},
-    {"player": "Roschon Johnson",          "pos": "RB",  "proj":  70},
-    {"player": "Kimani Vidal",             "pos": "RB",  "proj":  64},
-    {"player": "Patrick Taylor",           "pos": "RB",  "proj":  58},
-    {"player": "Keaton Mitchell",          "pos": "RB",  "proj":  54},
-    {"player": "Marlon Mack",              "pos": "RB",  "proj":  50},
-    {"player": "Samaje Perine",            "pos": "RB",  "proj":  46},
-    {"player": "Elijah Mitchell",          "pos": "RB",  "proj":  42},
-    {"player": "Jordan Mason",             "pos": "RB",  "proj":  38},
-    {"player": "Chris Rodriguez Jr.",      "pos": "RB",  "proj":  34},
+    {"player": "Bijan Robinson",           "pos": "RB",  "proj": 380, "team": "ATL"},
+    {"player": "Jahmyr Gibbs",             "pos": "RB",  "proj": 370, "team": "DET"},
+    {"player": "Christian McCaffrey",      "pos": "RB",  "proj": 370, "team": "SF"},
+    {"player": "Saquon Barkley",           "pos": "RB",  "proj": 360, "team": "PHI"},
+    {"player": "Jonathan Taylor",          "pos": "RB",  "proj": 340, "team": "IND"},
+    {"player": "De'Von Achane",            "pos": "RB",  "proj": 320, "team": "MIA"},
+    {"player": "Kyren Williams",           "pos": "RB",  "proj": 310, "team": "LAR"},
+    {"player": "James Cook",               "pos": "RB",  "proj": 255, "team": "BUF"},
+    {"player": "Kenneth Walker III",       "pos": "RB",  "proj": 250, "team": "SEA"},
+    {"player": "Derrick Henry",            "pos": "RB",  "proj": 245, "team": "BAL"},
+    {"player": "Josh Jacobs",              "pos": "RB",  "proj": 240, "team": "GB"},
+    {"player": "Breece Hall",              "pos": "RB",  "proj": 235, "team": "NYJ"},
+    {"player": "Rhamondre Stevenson",      "pos": "RB",  "proj": 228, "team": "NE"},
+    {"player": "Aaron Jones",              "pos": "RB",  "proj": 222, "team": "MIN"},
+    {"player": "Tony Pollard",             "pos": "RB",  "proj": 215, "team": "TEN"},
+    {"player": "Joe Mixon",                "pos": "RB",  "proj": 208, "team": "HOU"},
+    {"player": "Rachaad White",            "pos": "RB",  "proj": 200, "team": "TB"},
+    {"player": "D'Andre Swift",            "pos": "RB",  "proj": 193, "team": "CHI"},
+    {"player": "Isiah Pacheco",            "pos": "RB",  "proj": 186, "team": "KC"},
+    {"player": "Travis Etienne Jr.",       "pos": "RB",  "proj": 180, "team": "JAX"},
+    {"player": "Zack Moss",                "pos": "RB",  "proj": 173, "team": "CIN"},
+    {"player": "Javonte Williams",         "pos": "RB",  "proj": 166, "team": "DEN"},
+    {"player": "Chuba Hubbard",            "pos": "RB",  "proj": 160, "team": "CAR"},
+    {"player": "Najee Harris",             "pos": "RB",  "proj": 153, "team": "LAC"},
+    {"player": "Alvin Kamara",             "pos": "RB",  "proj": 147, "team": "NO"},
+    {"player": "Miles Sanders",            "pos": "RB",  "proj": 140, "team": "CAR"},
+    {"player": "Devin Singletary",         "pos": "RB",  "proj": 133, "team": "NYG"},
+    {"player": "Ezekiel Elliott",          "pos": "RB",  "proj": 126, "team": "DAL"},
+    {"player": "Kareem Hunt",              "pos": "RB",  "proj": 120, "team": "KC"},
+    {"player": "Dameon Pierce",            "pos": "RB",  "proj": 113, "team": "HOU"},
+    {"player": "David Montgomery",         "pos": "RB",  "proj": 107, "team": "DET"},
+    {"player": "Tyjae Spears",             "pos": "RB",  "proj": 100, "team": "TEN"},
+    {"player": "Rico Dowdle",              "pos": "RB",  "proj":  94, "team": "DAL"},
+    {"player": "Jaylen Warren",            "pos": "RB",  "proj":  88, "team": "PIT"},
+    {"player": "Ty Chandler",              "pos": "RB",  "proj":  82, "team": "MIN"},
+    {"player": "Jaleel McLaughlin",        "pos": "RB",  "proj":  76, "team": "DEN"},
+    {"player": "Roschon Johnson",          "pos": "RB",  "proj":  70, "team": "CHI"},
+    {"player": "Kimani Vidal",             "pos": "RB",  "proj":  64, "team": "LAC"},
+    {"player": "Patrick Taylor",           "pos": "RB",  "proj":  58, "team": "MIA"},
+    {"player": "Keaton Mitchell",          "pos": "RB",  "proj":  54, "team": "BAL"},
+    {"player": "Marlon Mack",              "pos": "RB",  "proj":  50, "team": "HOU"},
+    {"player": "Samaje Perine",            "pos": "RB",  "proj":  46, "team": "DEN"},
+    {"player": "Elijah Mitchell",          "pos": "RB",  "proj":  42, "team": "SF"},
+    {"player": "Jordan Mason",             "pos": "RB",  "proj":  38, "team": "SF"},
+    {"player": "Chris Rodriguez Jr.",      "pos": "RB",  "proj":  34, "team": "WAS"},
     # ── WRs ──────────────────────────────────────────────────────────────────
-    {"player": "Ja'Marr Chase",            "pos": "WR",  "proj": 360},
-    {"player": "Puka Nacua",               "pos": "WR",  "proj": 355},
-    {"player": "CeeDee Lamb",              "pos": "WR",  "proj": 350},
-    {"player": "Justin Jefferson",         "pos": "WR",  "proj": 350},
-    {"player": "Amon-Ra St. Brown",        "pos": "WR",  "proj": 340},
-    {"player": "Tyreek Hill",              "pos": "WR",  "proj": 325},
-    {"player": "Jaxon Smith-Njigba",       "pos": "WR",  "proj": 330},
-    {"player": "Malik Nabers",             "pos": "WR",  "proj": 315},
-    {"player": "A.J. Brown",               "pos": "WR",  "proj": 315},
-    {"player": "Marvin Harrison Jr.",      "pos": "WR",  "proj": 310},
-    {"player": "Nico Collins",             "pos": "WR",  "proj": 305},
-    {"player": "Cooper Kupp",              "pos": "WR",  "proj": 305},
-    {"player": "Drake London",             "pos": "WR",  "proj": 300},
-    {"player": "Mike Evans",               "pos": "WR",  "proj": 300},
-    {"player": "Garrett Wilson",           "pos": "WR",  "proj": 295},
-    {"player": "DK Metcalf",               "pos": "WR",  "proj": 295},
-    {"player": "Deebo Samuel",             "pos": "WR",  "proj": 290},
-    {"player": "Rashee Rice",              "pos": "WR",  "proj": 290},
-    {"player": "Chris Olave",              "pos": "WR",  "proj": 285},
-    {"player": "Brian Thomas Jr.",         "pos": "WR",  "proj": 285},
-    {"player": "Davante Adams",            "pos": "WR",  "proj": 280},
-    {"player": "Rome Odunze",              "pos": "WR",  "proj": 280},
-    {"player": "DJ Moore",                 "pos": "WR",  "proj": 275},
-    {"player": "Xavier Worthy",            "pos": "WR",  "proj": 275},
-    {"player": "Jaylen Waddle",            "pos": "WR",  "proj": 270},
-    {"player": "Ladd McConkey",            "pos": "WR",  "proj": 270},
-    {"player": "Zay Flowers",              "pos": "WR",  "proj": 265},
-    {"player": "Tetairoa McMillan",        "pos": "WR",  "proj": 265},
-    {"player": "DeVonta Smith",            "pos": "WR",  "proj": 260},
-    {"player": "Tank Dell",                "pos": "WR",  "proj": 255},
-    {"player": "Stefon Diggs",             "pos": "WR",  "proj": 250},
-    {"player": "Tee Higgins",              "pos": "WR",  "proj": 245},
-    {"player": "Amari Cooper",             "pos": "WR",  "proj": 240},
-    {"player": "Christian Kirk",           "pos": "WR",  "proj": 235},
-    {"player": "Terry McLaurin",           "pos": "WR",  "proj": 230},
-    {"player": "Diontae Johnson",          "pos": "WR",  "proj": 225},
-    {"player": "Keenan Allen",             "pos": "WR",  "proj": 220},
-    {"player": "Courtland Sutton",         "pos": "WR",  "proj": 215},
-    {"player": "Adam Thielen",             "pos": "WR",  "proj": 210},
-    {"player": "Michael Pittman Jr.",      "pos": "WR",  "proj": 205},
-    {"player": "Calvin Ridley",            "pos": "WR",  "proj": 200},
-    {"player": "Chris Godwin",             "pos": "WR",  "proj": 195},
-    {"player": "Kendrick Bourne",          "pos": "WR",  "proj": 190},
-    {"player": "Darnell Mooney",           "pos": "WR",  "proj": 185},
-    {"player": "Quentin Johnston",         "pos": "WR",  "proj": 180},
-    {"player": "Wan'Dale Robinson",        "pos": "WR",  "proj": 175},
-    {"player": "Gabe Davis",               "pos": "WR",  "proj": 170},
-    {"player": "Elijah Moore",             "pos": "WR",  "proj": 165},
-    {"player": "Rashid Shaheed",           "pos": "WR",  "proj": 160},
-    {"player": "Cedric Tillman",           "pos": "WR",  "proj": 155},
-    {"player": "Odell Beckham Jr.",        "pos": "WR",  "proj": 148},
-    {"player": "Demarcus Robinson",        "pos": "WR",  "proj": 142},
-    {"player": "Marquez Valdes-Scantling", "pos": "WR",  "proj": 136},
-    {"player": "Nelson Agholor",           "pos": "WR",  "proj": 130},
-    {"player": "Jalen Tolbert",            "pos": "WR",  "proj": 124},
-    {"player": "Parris Campbell",          "pos": "WR",  "proj": 118},
-    {"player": "Tutu Atwell",              "pos": "WR",  "proj": 112},
-    {"player": "Dontayvion Wicks",         "pos": "WR",  "proj": 106},
-    {"player": "Jakobi Meyers",            "pos": "WR",  "proj": 100},
-    {"player": "Tre Tucker",               "pos": "WR",  "proj":  94},
-    {"player": "K.J. Osborn",              "pos": "WR",  "proj":  88},
-    {"player": "Khalil Shakir",            "pos": "WR",  "proj":  82},
-    {"player": "Allen Lazard",             "pos": "WR",  "proj":  76},
-    {"player": "Kadarius Toney",           "pos": "WR",  "proj":  70},
-    {"player": "Skyy Moore",               "pos": "WR",  "proj":  64},
+    {"player": "Ja'Marr Chase",            "pos": "WR",  "proj": 360, "team": "CIN"},
+    {"player": "Puka Nacua",               "pos": "WR",  "proj": 355, "team": "LAR"},
+    {"player": "CeeDee Lamb",              "pos": "WR",  "proj": 350, "team": "DAL"},
+    {"player": "Justin Jefferson",         "pos": "WR",  "proj": 350, "team": "MIN"},
+    {"player": "Amon-Ra St. Brown",        "pos": "WR",  "proj": 340, "team": "DET"},
+    {"player": "Tyreek Hill",              "pos": "WR",  "proj": 325, "team": "MIA"},
+    {"player": "Jaxon Smith-Njigba",       "pos": "WR",  "proj": 330, "team": "SEA"},
+    {"player": "Malik Nabers",             "pos": "WR",  "proj": 315, "team": "NYG"},
+    {"player": "A.J. Brown",               "pos": "WR",  "proj": 315, "team": "PHI"},
+    {"player": "Marvin Harrison Jr.",      "pos": "WR",  "proj": 310, "team": "ARI"},
+    {"player": "Nico Collins",             "pos": "WR",  "proj": 305, "team": "HOU"},
+    {"player": "Cooper Kupp",              "pos": "WR",  "proj": 305, "team": "LAR"},
+    {"player": "Drake London",             "pos": "WR",  "proj": 300, "team": "ATL"},
+    {"player": "Mike Evans",               "pos": "WR",  "proj": 300, "team": "TB"},
+    {"player": "Garrett Wilson",           "pos": "WR",  "proj": 295, "team": "NYJ"},
+    {"player": "DK Metcalf",               "pos": "WR",  "proj": 295, "team": "SEA"},
+    {"player": "Deebo Samuel",             "pos": "WR",  "proj": 290, "team": "SF"},
+    {"player": "Rashee Rice",              "pos": "WR",  "proj": 290, "team": "KC"},
+    {"player": "Chris Olave",              "pos": "WR",  "proj": 285, "team": "NO"},
+    {"player": "Brian Thomas Jr.",         "pos": "WR",  "proj": 285, "team": "JAX"},
+    {"player": "Davante Adams",            "pos": "WR",  "proj": 280, "team": "LV"},
+    {"player": "Rome Odunze",              "pos": "WR",  "proj": 280, "team": "CHI"},
+    {"player": "DJ Moore",                 "pos": "WR",  "proj": 275, "team": "CHI"},
+    {"player": "Xavier Worthy",            "pos": "WR",  "proj": 275, "team": "KC"},
+    {"player": "Jaylen Waddle",            "pos": "WR",  "proj": 270, "team": "MIA"},
+    {"player": "Ladd McConkey",            "pos": "WR",  "proj": 270, "team": "LAC"},
+    {"player": "Zay Flowers",              "pos": "WR",  "proj": 265, "team": "BAL"},
+    {"player": "Tetairoa McMillan",        "pos": "WR",  "proj": 265, "team": "CAR"},
+    {"player": "DeVonta Smith",            "pos": "WR",  "proj": 260, "team": "PHI"},
+    {"player": "Tank Dell",                "pos": "WR",  "proj": 255, "team": "HOU"},
+    {"player": "Stefon Diggs",             "pos": "WR",  "proj": 250, "team": "NE"},
+    {"player": "Tee Higgins",              "pos": "WR",  "proj": 245, "team": "CIN"},
+    {"player": "Amari Cooper",             "pos": "WR",  "proj": 240, "team": "BUF"},
+    {"player": "Christian Kirk",           "pos": "WR",  "proj": 235, "team": "JAX"},
+    {"player": "Terry McLaurin",           "pos": "WR",  "proj": 230, "team": "WAS"},
+    {"player": "Diontae Johnson",          "pos": "WR",  "proj": 225, "team": "CAR"},
+    {"player": "Keenan Allen",             "pos": "WR",  "proj": 220, "team": "CHI"},
+    {"player": "Courtland Sutton",         "pos": "WR",  "proj": 215, "team": "DEN"},
+    {"player": "Adam Thielen",             "pos": "WR",  "proj": 210, "team": "CAR"},
+    {"player": "Michael Pittman Jr.",      "pos": "WR",  "proj": 205, "team": "IND"},
+    {"player": "Calvin Ridley",            "pos": "WR",  "proj": 200, "team": "TEN"},
+    {"player": "Chris Godwin",             "pos": "WR",  "proj": 195, "team": "TB"},
+    {"player": "Kendrick Bourne",          "pos": "WR",  "proj": 190, "team": "NE"},
+    {"player": "Darnell Mooney",           "pos": "WR",  "proj": 185, "team": "ATL"},
+    {"player": "Quentin Johnston",         "pos": "WR",  "proj": 180, "team": "LAC"},
+    {"player": "Wan'Dale Robinson",        "pos": "WR",  "proj": 175, "team": "NYG"},
+    {"player": "Gabe Davis",               "pos": "WR",  "proj": 170, "team": "JAX"},
+    {"player": "Elijah Moore",             "pos": "WR",  "proj": 165, "team": "CLE"},
+    {"player": "Rashid Shaheed",           "pos": "WR",  "proj": 160, "team": "NO"},
+    {"player": "Cedric Tillman",           "pos": "WR",  "proj": 155, "team": "CLE"},
+    {"player": "Odell Beckham Jr.",        "pos": "WR",  "proj": 148, "team": "MIA"},
+    {"player": "Demarcus Robinson",        "pos": "WR",  "proj": 142, "team": "LAR"},
+    {"player": "Marquez Valdes-Scantling", "pos": "WR",  "proj": 136, "team": "NE"},
+    {"player": "Nelson Agholor",           "pos": "WR",  "proj": 130, "team": "NE"},
+    {"player": "Jalen Tolbert",            "pos": "WR",  "proj": 124, "team": "DAL"},
+    {"player": "Parris Campbell",          "pos": "WR",  "proj": 118, "team": "NYG"},
+    {"player": "Tutu Atwell",              "pos": "WR",  "proj": 112, "team": "LAR"},
+    {"player": "Dontayvion Wicks",         "pos": "WR",  "proj": 106, "team": "GB"},
+    {"player": "Jakobi Meyers",            "pos": "WR",  "proj": 100, "team": "LV"},
+    {"player": "Tre Tucker",               "pos": "WR",  "proj":  94, "team": "LV"},
+    {"player": "K.J. Osborn",              "pos": "WR",  "proj":  88, "team": "NE"},
+    {"player": "Khalil Shakir",            "pos": "WR",  "proj":  82, "team": "BUF"},
+    {"player": "Allen Lazard",             "pos": "WR",  "proj":  76, "team": "NYJ"},
+    {"player": "Kadarius Toney",           "pos": "WR",  "proj":  70, "team": "KC"},
+    {"player": "Skyy Moore",               "pos": "WR",  "proj":  64, "team": "KC"},
     # ── TEs ──────────────────────────────────────────────────────────────────
-    {"player": "Travis Kelce",             "pos": "TE",  "proj": 280},
-    {"player": "Sam LaPorta",              "pos": "TE",  "proj": 270},
-    {"player": "Brock Bowers",             "pos": "TE",  "proj": 265},
-    {"player": "Trey McBride",             "pos": "TE",  "proj": 255},
-    {"player": "Mark Andrews",             "pos": "TE",  "proj": 250},
-    {"player": "George Kittle",            "pos": "TE",  "proj": 245},
-    {"player": "Dalton Kincaid",           "pos": "TE",  "proj": 240},
-    {"player": "Kyle Pitts",               "pos": "TE",  "proj": 235},
-    {"player": "David Njoku",              "pos": "TE",  "proj": 230},
-    {"player": "Evan Engram",              "pos": "TE",  "proj": 225},
-    {"player": "T.J. Hockenson",           "pos": "TE",  "proj": 220},
-    {"player": "Jake Ferguson",            "pos": "TE",  "proj": 215},
-    {"player": "Pat Freiermuth",           "pos": "TE",  "proj": 210},
-    {"player": "Cole Kmet",                "pos": "TE",  "proj": 205},
-    {"player": "Isaiah Likely",            "pos": "TE",  "proj": 200},
-    {"player": "Hunter Henry",             "pos": "TE",  "proj": 193},
-    {"player": "Gerald Everett",           "pos": "TE",  "proj": 186},
-    {"player": "Mike Gesicki",             "pos": "TE",  "proj": 178},
-    {"player": "Juwan Johnson",            "pos": "TE",  "proj": 170},
-    {"player": "Tucker Kraft",             "pos": "TE",  "proj": 163},
-    {"player": "Noah Fant",                "pos": "TE",  "proj": 157},
-    {"player": "Cade Otton",               "pos": "TE",  "proj": 150},
-    {"player": "Tyler Higbee",             "pos": "TE",  "proj": 143},
-    {"player": "Jonnu Smith",              "pos": "TE",  "proj": 136},
+    {"player": "Travis Kelce",             "pos": "TE",  "proj": 280, "team": "KC"},
+    {"player": "Sam LaPorta",              "pos": "TE",  "proj": 270, "team": "DET"},
+    {"player": "Brock Bowers",             "pos": "TE",  "proj": 265, "team": "LV"},
+    {"player": "Trey McBride",             "pos": "TE",  "proj": 255, "team": "ARI"},
+    {"player": "Mark Andrews",             "pos": "TE",  "proj": 250, "team": "BAL"},
+    {"player": "George Kittle",            "pos": "TE",  "proj": 245, "team": "SF"},
+    {"player": "Dalton Kincaid",           "pos": "TE",  "proj": 240, "team": "BUF"},
+    {"player": "Kyle Pitts",               "pos": "TE",  "proj": 235, "team": "ATL"},
+    {"player": "David Njoku",              "pos": "TE",  "proj": 230, "team": "CLE"},
+    {"player": "Evan Engram",              "pos": "TE",  "proj": 225, "team": "JAX"},
+    {"player": "T.J. Hockenson",           "pos": "TE",  "proj": 220, "team": "MIN"},
+    {"player": "Jake Ferguson",            "pos": "TE",  "proj": 215, "team": "DAL"},
+    {"player": "Pat Freiermuth",           "pos": "TE",  "proj": 210, "team": "PIT"},
+    {"player": "Cole Kmet",                "pos": "TE",  "proj": 205, "team": "CHI"},
+    {"player": "Isaiah Likely",            "pos": "TE",  "proj": 200, "team": "BAL"},
+    {"player": "Hunter Henry",             "pos": "TE",  "proj": 193, "team": "NE"},
+    {"player": "Gerald Everett",           "pos": "TE",  "proj": 186, "team": "LAC"},
+    {"player": "Mike Gesicki",             "pos": "TE",  "proj": 178, "team": "CIN"},
+    {"player": "Juwan Johnson",            "pos": "TE",  "proj": 170, "team": "NO"},
+    {"player": "Tucker Kraft",             "pos": "TE",  "proj": 163, "team": "GB"},
+    {"player": "Noah Fant",                "pos": "TE",  "proj": 157, "team": "SEA"},
+    {"player": "Cade Otton",               "pos": "TE",  "proj": 150, "team": "TB"},
+    {"player": "Tyler Higbee",             "pos": "TE",  "proj": 143, "team": "LAR"},
+    {"player": "Jonnu Smith",              "pos": "TE",  "proj": 136, "team": "MIA"},
     # ── Ks ───────────────────────────────────────────────────────────────────
-    {"player": "Justin Tucker",            "pos": "K",   "proj": 155},
-    {"player": "Evan McPherson",           "pos": "K",   "proj": 148},
-    {"player": "Harrison Butker",          "pos": "K",   "proj": 142},
-    {"player": "Tyler Bass",               "pos": "K",   "proj": 136},
-    {"player": "Jake Elliott",             "pos": "K",   "proj": 130},
-    {"player": "Brandon Aubrey",           "pos": "K",   "proj": 125},
-    {"player": "Cameron Dicker",           "pos": "K",   "proj": 120},
-    {"player": "Younghoe Koo",             "pos": "K",   "proj": 115},
-    {"player": "Chris Boswell",            "pos": "K",   "proj": 110},
-    {"player": "Greg Joseph",              "pos": "K",   "proj": 105},
-    {"player": "Matt Gay",                 "pos": "K",   "proj": 100},
-    {"player": "Jason Sanders",            "pos": "K",   "proj":  95},
+    {"player": "Justin Tucker",            "pos": "K",   "proj": 155, "team": "BAL"},
+    {"player": "Evan McPherson",           "pos": "K",   "proj": 148, "team": "CIN"},
+    {"player": "Harrison Butker",          "pos": "K",   "proj": 142, "team": "KC"},
+    {"player": "Tyler Bass",               "pos": "K",   "proj": 136, "team": "BUF"},
+    {"player": "Jake Elliott",             "pos": "K",   "proj": 130, "team": "PHI"},
+    {"player": "Brandon Aubrey",           "pos": "K",   "proj": 125, "team": "DAL"},
+    {"player": "Cameron Dicker",           "pos": "K",   "proj": 120, "team": "LAC"},
+    {"player": "Younghoe Koo",             "pos": "K",   "proj": 115, "team": "ATL"},
+    {"player": "Chris Boswell",            "pos": "K",   "proj": 110, "team": "PIT"},
+    {"player": "Greg Joseph",              "pos": "K",   "proj": 105, "team": "MIN"},
+    {"player": "Matt Gay",                 "pos": "K",   "proj": 100, "team": "IND"},
+    {"player": "Jason Sanders",            "pos": "K",   "proj":  95, "team": "MIA"},
     # ── DEF ──────────────────────────────────────────────────────────────────
-    {"player": "San Francisco 49ers",      "pos": "DEF", "proj": 155},
-    {"player": "Dallas Cowboys",           "pos": "DEF", "proj": 148},
-    {"player": "New England Patriots",     "pos": "DEF", "proj": 142},
-    {"player": "Baltimore Ravens",         "pos": "DEF", "proj": 136},
-    {"player": "Buffalo Bills",            "pos": "DEF", "proj": 130},
-    {"player": "Pittsburgh Steelers",      "pos": "DEF", "proj": 125},
-    {"player": "Cleveland Browns",         "pos": "DEF", "proj": 120},
-    {"player": "Philadelphia Eagles",      "pos": "DEF", "proj": 115},
-    {"player": "Kansas City Chiefs",       "pos": "DEF", "proj": 110},
-    {"player": "Miami Dolphins",           "pos": "DEF", "proj": 105},
-    {"player": "Minnesota Vikings",        "pos": "DEF", "proj": 100},
-    {"player": "Los Angeles Rams",         "pos": "DEF", "proj":  95},
+    {"player": "San Francisco 49ers",      "pos": "DEF", "proj": 155, "team": "SF"},
+    {"player": "Dallas Cowboys",           "pos": "DEF", "proj": 148, "team": "DAL"},
+    {"player": "New England Patriots",     "pos": "DEF", "proj": 142, "team": "NE"},
+    {"player": "Baltimore Ravens",         "pos": "DEF", "proj": 136, "team": "BAL"},
+    {"player": "Buffalo Bills",            "pos": "DEF", "proj": 130, "team": "BUF"},
+    {"player": "Pittsburgh Steelers",      "pos": "DEF", "proj": 125, "team": "PIT"},
+    {"player": "Cleveland Browns",         "pos": "DEF", "proj": 120, "team": "CLE"},
+    {"player": "Philadelphia Eagles",      "pos": "DEF", "proj": 115, "team": "PHI"},
+    {"player": "Kansas City Chiefs",       "pos": "DEF", "proj": 110, "team": "KC"},
+    {"player": "Miami Dolphins",           "pos": "DEF", "proj": 105, "team": "MIA"},
+    {"player": "Minnesota Vikings",        "pos": "DEF", "proj": 100, "team": "MIN"},
+    {"player": "Los Angeles Rams",         "pos": "DEF", "proj":  95, "team": "LAR"},
 ]
-
 players_df = pd.DataFrame(player_data).sort_values("proj", ascending=False).reset_index(drop=True)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -219,6 +218,29 @@ LINEUP_SLOTS = {
 }
 STARTER_SLOTS = list(LINEUP_SLOTS.keys())
 
+# ── 2025 NFL Bye Weeks (NFL week number) ─────────────────────────────────────
+# Source: 2025 NFL regular season schedule
+BYE_WEEKS = {
+    "ARI":  5,  "LAC":  5,
+    "DET":  6,  "NYG":  6,
+    "CAR":  7,  "GB":   7,  "LV":  7,  "NYJ":  7,
+    "CHI":  8,  "SF":   8,  "SEA": 8,  "ATL":  8,
+    "DAL":  9,  "MIA":  9,  "NO":  9,  "BAL":  9,
+    "DEN": 10,  "TB":  10,  "CLE":10,  "HOU": 10,
+    "BUF": 11,  "LAR": 11,  "NE": 11,  "PIT": 11,
+    "IND": 12,  "MIN": 12,  "PHI":12,  "WAS": 12,
+    "JAX": 13,  "KC":  13,  "CIN":13,  "TEN": 13,
+}
+
+def get_player_team(name):
+    row = players_df[players_df["player"] == name]
+    return str(row["team"].iloc[0]) if not row.empty and "team" in row.columns else ""
+
+def is_on_bye(name, nfl_week):
+    """Return True if this player's NFL team has a bye in the given week."""
+    team = get_player_team(name)
+    return BYE_WEEKS.get(team, -1) == nfl_week
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def generate_schedule(team_names):
     teams = list(team_names)
@@ -240,10 +262,12 @@ def sim_team_score(mean):
     """CPU team score as a single number."""
     return round(max(55.0, min(200.0, random.gauss(mean, SCORE_STD))), 2)
 
-def sim_player_score(proj):
-    """Simulate one player's weekly score from their season projection."""
+def sim_player_score(proj, player_name="", nfl_week=None):
+    """Simulate one player's weekly score. Returns 0.0 on bye week."""
+    if nfl_week and player_name and is_on_bye(player_name, nfl_week):
+        return 0.0
     weekly_mean = proj / 17.0
-    std = weekly_mean * 0.50   # realistic week-to-week variance
+    std = weekly_mean * 0.50
     return round(max(0.0, random.gauss(weekly_mean, std)), 2)
 
 def get_player_proj(name):
@@ -284,14 +308,16 @@ def auto_set_lineup(roster_names):
 
     return lineup
 
-def score_lineup(lineup):
+def score_lineup(lineup, nfl_week=None):
     """Sum up simulated player scores for all starters. Returns (total, score_dict)."""
     scores = {}
     for slot, player in lineup.items():
         if player:
-            scores[slot] = (player, sim_player_score(get_player_proj(player)))
+            score = sim_player_score(get_player_proj(player), player, nfl_week)
+            on_bye = nfl_week and is_on_bye(player, nfl_week)
+            scores[slot] = (player, score, on_bye)
         else:
-            scores[slot] = (None, 0.0)
+            scores[slot] = (None, 0.0, False)
     total = round(sum(v[1] for v in scores.values()), 2)
     return total, scores
 
@@ -366,10 +392,13 @@ def render_my_team_panel():
             current = ss.my_lineup.get(slot)
             idx = options.index(current) if current in options else 0
 
-            # Show proj next to slot label
+            # Show proj + team + bye warning next to slot label
             proj_label = ""
             if current and current in roster:
-                proj_label = f"  _(~{get_player_proj(current)/17:.1f} proj)_"
+                team_tag = get_player_team(current)
+                bye_wk   = BYE_WEEKS.get(team_tag, "—")
+                bye_warn = f" ⚠️BYE" if bye_wk == ss.current_week else ""
+                proj_label = f"  _{team_tag} · ~{get_player_proj(current)/17:.1f} proj{bye_warn}_"
 
             chosen = st.selectbox(
                 f"{slot}{proj_label}",
@@ -394,12 +423,16 @@ def render_my_team_panel():
         # ── Full Roster ────────────────────────────────────────────────────
         st.markdown("**📄 Full Roster**")
         starters = list(ss.my_lineup.values())
+        current_wk = ss.current_week
         rows = []
         for p in roster:
-            pos  = get_player_pos(p)
-            proj = get_player_proj(p)
-            role = "🟢 Starter" if p in starters else "⚪ Bench"
-            rows.append({"Player": p, "Pos": pos, "Proj": proj, "Status": role})
+            pos   = get_player_pos(p)
+            proj  = get_player_proj(p)
+            team  = get_player_team(p)
+            bye   = BYE_WEEKS.get(team, "—")
+            role  = "🟢 Starter" if p in starters else "⚪ Bench"
+            bye_flag = f"💤 Wk {bye}" if bye == current_wk else f"Wk {bye}"
+            rows.append({"Player": p, "Team": team, "Pos": pos, "Proj": proj, "Bye": bye_flag, "Status": role})
         df = pd.DataFrame(rows).sort_values(["Status", "Proj"], ascending=[True, False])
         st.dataframe(df, use_container_width=True, hide_index=True)
 
@@ -610,11 +643,16 @@ elif ss.phase == "draft":
                 p_col, btn_col = st.columns([4, 1])
                 with p_col:
                     badge = pos_badge(row["pos"])
+                    team = row.get('team', '')
+                    bye_wk = BYE_WEEKS.get(team, '—')
+                    team_span = f'<span style="color:#888;font-size:0.75rem;margin-left:4px">{team}</span>'
+                    bye_span  = f'<span style="color:#aaa;font-size:0.72rem;margin-left:6px">bye {bye_wk}</span>'
                     st.markdown(
                         f'<div class="player-row" style="border:none;padding:6px 0;margin:0">'
                         f'<span class="player-rank">{i+1}</span>'
                         f'{badge}'
                         f'<span class="player-name">{row["player"]}</span>'
+                        f'{team_span}{bye_span}'
                         f'<span class="player-proj">{row["proj"]} pts</span>'
                         f'</div>',
                         unsafe_allow_html=True
@@ -756,11 +794,24 @@ elif ss.phase == "week_preview":
     starters = {s: p for s, p in ss.my_lineup.items() if p}
     if starters:
         with st.expander("📋 Your starting lineup this week", expanded=False):
-            rows = [{"Slot": s, "Player": p,
-                     "Pos": get_player_pos(p),
-                     "Wkly Proj": f"{get_player_proj(p)/17:.1f}"}
-                    for s, p in starters.items()]
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+            rows = []
+            for s, p in starters.items():
+                team   = get_player_team(p)
+                bye_wk = BYE_WEEKS.get(team, "—")
+                on_bye = bye_wk == wk
+                rows.append({
+                    "Slot": s, "Player": p,
+                    "Team": team,
+                    "Pos":  get_player_pos(p),
+                    "Wkly Proj": f"{get_player_proj(p)/17:.1f}",
+                    "Bye Wk": f"💤 THIS WEEK" if on_bye else str(bye_wk),
+                })
+            df_lineup = pd.DataFrame(rows)
+            # Warn about bye players
+            bye_starters = [r["Player"] for _, r in df_lineup.iterrows() if r["Bye Wk"] == "💤 THIS WEEK"]
+            if bye_starters:
+                st.warning(f"⚠️ On bye this week: {', '.join(bye_starters)} — consider benching them!")
+            st.dataframe(df_lineup, use_container_width=True, hide_index=True)
             missing = [s for s in STARTER_SLOTS if not ss.my_lineup.get(s)]
             if missing:
                 st.warning(f"⚠️ Empty slots: {', '.join(missing)} — set your lineup in the sidebar!")
@@ -783,11 +834,11 @@ elif ss.phase == "week_preview":
             results = []
             for t1, t2 in matchups:
                 if t1 == ss.your_team:
-                    s1, player_scores = score_lineup(ss.my_lineup)
+                    s1, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
                     s2 = sim_team_score(ss.team_strengths[t2])
                     ss.week_player_scores = player_scores
                 elif t2 == ss.your_team:
-                    s2, player_scores = score_lineup(ss.my_lineup)
+                    s2, player_scores = score_lineup(ss.my_lineup, nfl_week=wk)
                     s1 = sim_team_score(ss.team_strengths[t1])
                     ss.week_player_scores = player_scores
                 else:
@@ -805,12 +856,12 @@ elif ss.phase == "week_preview":
                 results = []
                 for t1, t2 in week_matchups:
                     if t1 == ss.your_team:
-                        s1, player_scores = score_lineup(ss.my_lineup)
+                        s1, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
                         s2 = sim_team_score(ss.team_strengths[t2])
                         if w == WEEKS_REG:
                             ss.week_player_scores = player_scores
                     elif t2 == ss.your_team:
-                        s2, player_scores = score_lineup(ss.my_lineup)
+                        s2, player_scores = score_lineup(ss.my_lineup, nfl_week=w)
                         s1 = sim_team_score(ss.team_strengths[t1])
                         if w == WEEKS_REG:
                             ss.week_player_scores = player_scores
@@ -864,14 +915,19 @@ elif ss.phase == "week_results":
     if ss.week_player_scores:
         with st.expander("📊 Your player scores this week", expanded=True):
             rows = []
-            for slot, (player, score) in ss.week_player_scores.items():
+            for slot, val in ss.week_player_scores.items():
+                player = val[0] if val else None
+                score  = val[1] if len(val) > 1 else 0.0
+                on_bye = val[2] if len(val) > 2 else False
                 if player:
                     rows.append({
-                        "Slot":   slot,
-                        "Player": player,
-                        "Pos":    get_player_pos(player),
-                        "Score":  score,
-                        "Proj":   f"{get_player_proj(player)/17:.1f}",
+                        "Slot":    slot,
+                        "Player":  player,
+                        "Team":    get_player_team(player),
+                        "Pos":     get_player_pos(player),
+                        "Score":   score,
+                        "Proj":    f"{get_player_proj(player)/17:.1f}",
+                        "Status":  "💤 BYE" if on_bye else "✅ Active",
                     })
             df = pd.DataFrame(rows)
             st.dataframe(df, use_container_width=True, hide_index=True)
