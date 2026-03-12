@@ -473,13 +473,26 @@ elif ss.phase == "draft":
 
     /* Player rows */
     .player-row {
-        display: flex; align-items: center; padding: 6px 10px;
+        display: flex; align-items: center; padding: 4px 8px;
         border-bottom: 1px solid #f0f0f0; gap: 10px;
+        min-height: 36px;
     }
     .player-row:hover { background: #f8f9ff; }
-    .player-rank { color: #aaa; font-size: 0.78rem; width: 24px; text-align:right; flex-shrink:0; }
-    .player-name { font-weight: 600; font-size: 0.92rem; flex: 1; }
-    .player-proj { color: #555; font-size: 0.82rem; margin-left: auto; }
+    .player-rank { color: #bbb; font-size: 0.75rem; width: 22px; text-align:right; flex-shrink:0; }
+    .player-name { font-weight: 600; font-size: 0.9rem; flex: 1; }
+    .player-proj { color: #888; font-size: 0.8rem; white-space:nowrap; }
+
+    /* Make draft buttons compact and consistent height */
+    div[data-testid="stColumn"] .stButton > button[kind="primary"] {
+        font-size: 0.8rem !important;
+        padding: 4px 6px !important;
+        min-height: 32px !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        border-radius: 5px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.3px !important;
+    }
 
     /* Roster slot rows */
     .roster-row {
@@ -594,11 +607,11 @@ elif ss.phase == "draft":
             st.info("No players available at this position.")
         else:
             for i, row in view_df.iterrows():
-                p_col, btn_col = st.columns([5, 1])
+                p_col, btn_col = st.columns([4, 1])
                 with p_col:
                     badge = pos_badge(row["pos"])
                     st.markdown(
-                        f'<div class="player-row" style="border:none;padding:4px 0">'
+                        f'<div class="player-row" style="border:none;padding:6px 0;margin:0">'
                         f'<span class="player-rank">{i+1}</span>'
                         f'{badge}'
                         f'<span class="player-name">{row["player"]}</span>'
@@ -608,11 +621,20 @@ elif ss.phase == "draft":
                     )
                 with btn_col:
                     if is_yours:
-                        if st.button("➕ Draft Player", key=f"pick_{i}_{row['player']}", use_container_width=True, type="primary"):
+                        # Wrap in a styled container so button fills nicely
+                        st.markdown("<div style='padding-top:2px'>", unsafe_allow_html=True)
+                        if st.button(
+                            "＋ Draft",
+                            key=f"pick_{i}_{row['player']}",
+                            use_container_width=True,
+                            type="primary",
+                            help=f"Draft {row['player']}"
+                        ):
                             ss.rosters[ss.your_team].append(row["player"])
                             ss.drafted = ss.drafted[ss.drafted["player"] != row["player"]]
                             ss.current_pick += 1
                             st.rerun()
+                        st.markdown("</div>", unsafe_allow_html=True)
 
     with right_col:
         st.markdown("#### 📋 Your Roster")
